@@ -138,25 +138,24 @@
             }
         }
 
-        // 2. 新增：自动加载 Daily Log
+       // 2. 自动加载 Daily Log（同步你的书写顺序）
         async function loadDailyLogs() {
             const logContainer = document.getElementById('log-container');
             try {
                 const response = await fetch('daily-log.md');
                 const text = await response.text();
-                // 按照 ### 分隔日期
-                const entries = text.split('###').filter(e => e.trim() !== '');
+                
+                // 按照 ### 分隔，并过滤掉空行
+                let entries = text.split('###').map(e => e.trim()).filter(e => e !== '');
                 
                 logContainer.innerHTML = '';
                 
-                // 【核心修改处】：如果你想让最新写的显示在最上面，就保留 .reverse()
-                // 如果你发现现在反了，就删掉 .reverse() 或者加上它
-                const sortedEntries = entries.reverse(); 
-
-                // 只显示最近的 4 条记录
-                sortedEntries.slice(0, 4).forEach(entry => {
-                    const lines = entry.trim().split('\n');
+                // 【核心修改】：删掉了 .reverse()
+                // 因为你在 md 里已经把最新的写在最上面了，所以这里直接按顺序读取即可
+                entries.slice(0, 4).forEach(entry => {
+                    const lines = entry.split('\n');
                     const date = lines[0].trim();
+                    // 将剩余行合并为内容
                     const content = lines.slice(1).join('<br>').trim();
                     
                     const div = document.createElement('div');
@@ -168,7 +167,7 @@
                 logContainer.innerHTML = '<p>暂无新记录</p>';
             }
         }
-
+        
         function extractMeta(text, key) {
             const regex = new RegExp(`${key}:\\s*(.*)`);
             const match = text.match(regex);
