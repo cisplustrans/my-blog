@@ -1,5 +1,5 @@
 ---
-title: 站在我身边：关于成长与寻找
+title: 伴我同行：关于成长与寻找
 date: 2025-10-26
 location: SHENZHEN
 field: OBSERVATIONS
@@ -45,3 +45,4 @@ coming of age（成长）指的是以人物——通常是青少年，从童年/
 
 
 本次的观察就告一段落了，祝你度过一个愉快的周末尾巴。
+
