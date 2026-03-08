@@ -148,8 +148,13 @@
                 const entries = text.split('###').filter(e => e.trim() !== '');
                 
                 logContainer.innerHTML = '';
+                
+                // 【核心修改处】：如果你想让最新写的显示在最上面，就保留 .reverse()
+                // 如果你发现现在反了，就删掉 .reverse() 或者加上它
+                const sortedEntries = entries.reverse(); 
+
                 // 只显示最近的 4 条记录
-                entries.reverse().slice(0, 4).forEach(entry => {
+                sortedEntries.slice(0, 4).forEach(entry => {
                     const lines = entry.trim().split('\n');
                     const date = lines[0].trim();
                     const content = lines.slice(1).join('<br>').trim();
