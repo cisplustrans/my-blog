@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Abo's Archive | Field Notes</title>
+    <title>Abo's Archive | Digital Filing System</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* 1. 基础环境 */
+        /* 保持之前的 Clean Fit 样式 */
         body {
             background-color: #FAF8F2;
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
@@ -17,7 +18,6 @@
             justify-content: center;
         }
 
-        /* 2. 主容器 */
         .page-wrapper {
             max-width: 1000px;
             width: 100%;
@@ -26,178 +26,92 @@
             border-left: 3px solid #1a1a1a;
             border-right: 1px solid #eee;
             box-shadow: 10px 10px 0px rgba(0,0,0,0.02);
-            position: relative;
         }
 
-        /* 3. 头部 */
-        header {
-            border-bottom: 2px solid #1a1a1a;
-            margin-bottom: 50px;
-            padding-bottom: 30px;
-        }
+        header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
+        .site-title { font-size: 3rem; font-weight: bold; text-transform: uppercase; font-family: "Times New Roman", Times, serif; }
 
-        .site-title {
-            font-size: 3rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            margin: 0;
-            font-family: "Times New Roman", Times, serif;
-        }
-
-        .nav-links {
-            margin-top: 20px;
-            font-family: "Courier New", Courier, monospace;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .nav-links a {
-            color: #1a1a1a;
-            text-decoration: none;
-            margin-right: 30px;
-        }
-
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* 4. 布局 */
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1fr 260px;
-            gap: 60px;
-        }
-
-        /* 5. 文章元数据（重点修改处） */
-        .post-metadata {
+        /* 重点：文章列表样式 */
+        #post-list { list-style: none; padding: 0; }
+        .post-entry { margin-bottom: 40px; cursor: pointer; }
+        .post-entry:hover h2 { text-decoration: underline; }
+        
+        .post-meta {
             font-family: "Courier New", Courier, monospace;
             font-size: 0.75rem;
-            color: #666; /* 稍微淡一点，突出层次 */
-            margin-bottom: 12px;
-            display: flex;
-            gap: 15px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .meta-item {
             background: #f0f0f0;
-            padding: 2px 6px;
+            padding: 2px 8px;
+            margin-bottom: 10px;
+            display: inline-block;
         }
 
-        .article-list h2 {
-            font-size: 1.8rem;
-            margin: 0 0 15px 0;
-            line-height: 1.3;
-        }
-
-        .post-card {
-            margin-bottom: 60px;
-        }
-
-        .post-excerpt {
-            font-size: 1.1rem;
-            text-align: justify;
-            color: #333;
-        }
-
-        /* 6. 侧栏 */
-        .sidebar-log {
-            font-family: "Courier New", Courier, monospace;
-            border-left: 1px solid #ddd;
-            padding-left: 30px;
-        }
-
-        .sidebar-log h3 {
-            font-size: 1.1rem;
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .log-note {
-            font-size: 0.85rem;
-            margin-bottom: 25px;
-        }
-
-        .log-note strong {
-            display: block;
-            background: #1a1a1a;
-            color: white;
-            padding-left: 5px;
-            width: fit-content;
-            margin-bottom: 5px;
-        }
-
-        /* 7. 页脚 */
-        footer {
-            margin-top: 80px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 0.75rem;
-            color: #888;
-        }
+        /* 隐藏文章内容，点击后再显示 */
+        #content-viewer { display: none; }
+        .back-btn { cursor: pointer; font-family: "Courier New", monospace; font-weight: bold; margin-bottom: 20px; display: inline-block; }
     </style>
 </head>
 <body>
 
-    <div class="page-wrapper">
-        <header>
-            <div class="site-title">ABO'S ARCHIVE</div>
-            <nav class="nav-links">
-                <a href="#">/OBSERVATIONS</a>
-                <a href="#">/VIEWPOINTS</a>
-                <a href="#">/ABOUT</a>
-            </nav>
-        </header>
+    <div class="page-wrapper" id="main-container">
+        <div id="index-view">
+            <header>
+                <div class="site-title">ABO'S ARCHIVE</div>
+            </header>
+            
+            <main>
+                <ul id="post-list">
+                    <p style="font-family: monospace;">正在检索档案库...</p>
+                </ul>
+            </main>
+        </div>
 
-        <main class="layout-grid">
-            <section class="article-list">
-                
-                <article class="post-card">
-                    <div class="post-metadata">
-                        <span class="meta-item">FIELD: AESTHETICS</span>
-                        <span class="meta-item">LOC: SHENZHEN, CN</span>
-                    </div>
-                    <h2>阅读的清晰度，即思想的清晰度</h2>
-                    <p class="post-excerpt">
-                        在这个版本中，我们通过加入地理坐标，完成了对每一篇文字的“定位”。地点不仅是坐标，它代表了写作时的环境气温、光线以及当时的心境。
-                    </p>
-                </article>
-
-                <article class="post-card">
-                    <div class="post-metadata">
-                        <span class="meta-item">FIELD: MATERIALS</span>
-                        <span class="meta-item">LOC: SCNU DORM</span>
-                    </div>
-                    <h2>关于能量密度与排版留白的类比</h2>
-                    <p class="post-excerpt">
-                        在新材料领域，我们追求单位体积内的能量最大化；在排版美学中，我们追求的是单位视线内的信息舒适度……
-                    </p>
-                </article>
-
-            </section>
-
-            <aside class="sidebar-log">
-                <h3>DAILY LOG</h3>
-                <div class="log-note">
-                    <strong>MAR 28</strong>
-                    加入了 LOC 标签，现在看起来更像一份真正的野外调查报告了。
-                </div>
-                <div class="log-note">
-                    <strong>MAR 27</strong>
-                    罗湖的午后，阳光照在旧书脊上，颜色和这版背景色一模一样。
-                </div>
-            </aside>
-        </main>
-
-        <footer>
-            TYPESET BY ABO IN SHENZHEN. <br>
-            2026 ARCHIVE PROJECT.
-        </footer>
+        <div id="content-view" style="display: none;">
+            <div class="back-btn" onclick="showIndex()">[ ← BACK TO INDEX ]</div>
+            <article id="article-body"></article>
+        </div>
     </div>
 
+    <script>
+        // 你只需要在这里列出你的文件名，以后每写一篇，就在这里加个名字
+        const posts = ['first-post.md']; 
+
+        async function loadPosts() {
+            const listElement = document.getElementById('post-list');
+            listElement.innerHTML = '';
+
+            for (const file of posts) {
+                const response = await fetch(`posts/${file}`);
+                const text = await response.text();
+                
+                // 简单的标题提取逻辑
+                const title = text.split('\n')[1].replace('title: ', '') || file;
+                const date = text.split('\n')[2].replace('date: ', '') || 'UNKNOWN';
+
+                const li = document.createElement('li');
+                li.className = 'post-entry';
+                li.innerHTML = `
+                    <div class="post-meta">FILED ON: ${date}</div>
+                    <h2>${title}</h2>
+                `;
+                li.onclick = () => showPost(text);
+                listElement.appendChild(li);
+            }
+        }
+
+        function showPost(markdown) {
+            // 过滤掉最上面的元数据，只显示正文
+            const content = markdown.split('---').slice(2).join('---');
+            document.getElementById('index-view').style.display = 'none';
+            document.getElementById('content-view').style.display = 'block';
+            document.getElementById('article-body').innerHTML = marked.parse(content);
+        }
+
+        function showIndex() {
+            document.getElementById('index-view').style.display = 'block';
+            document.getElementById('content-view').style.display = 'none';
+        }
+
+        loadPosts();
+    </script>
 </body>
 </html>
