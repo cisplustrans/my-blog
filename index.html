@@ -5,7 +5,7 @@
     <title>Abo's Archive | Digital Filing System</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* --- 视觉审美 (Clean Fit / 纸质感) --- */
+        /* --- 1. 视觉审美 (Clean Fit / 纸质感) --- */
         body {
             background-color: #FAF8F2;
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
@@ -39,7 +39,7 @@
 
         .layout-grid { display: grid; grid-template-columns: 1fr 260px; gap: 60px; }
 
-        /* 文章卡片 */
+        /* 文章列表样式 */
         .post-card { margin-bottom: 50px; cursor: pointer; border-bottom: 1px solid #f2f2f2; padding-bottom: 30px; }
         .post-card:hover h2 { text-decoration: underline; }
         .post-card h2 { font-size: 1.8rem; margin: 0 0 10px 0; line-height: 1.3; font-family: Georgia, serif; }
@@ -60,10 +60,32 @@
         .log-note { font-size: 0.85rem; margin-bottom: 25px; line-height: 1.5; }
         .log-note strong { display: block; background: #1a1a1a; color: white; padding: 0 5px; width: fit-content; margin-bottom: 5px; }
 
+        /* --- 2. 文章详情页视图 --- */
         #content-view { display: none; }
         .back-btn { 
             cursor: pointer; font-family: "Courier New", monospace; font-weight: bold; 
             margin-bottom: 30px; display: inline-block; background: #1a1a1a; color: white; padding: 5px 15px;
+        }
+
+        /* --- 3. 核心图片与图注样式 (你要求的部分) --- */
+        #article-body img {
+            display: block;
+            margin: 30px auto;         /* 自动居中并保持上下间距 */
+            max-width: 100%;           /* 适配手机和电脑屏幕 */
+            height: auto;
+            border: 1px solid #1a1a1a; /* 增加细黑边，更有档案感 */
+            filter: contrast(1.1);     /* 稍微增强对比度，配合你的抖动效果 */
+        }
+
+        /* 让图注 (通常在 Markdown 里写为 <small> 或 <i>) 居中并调优 */
+        #article-body small {
+            display: block;
+            text-align: center;
+            margin-top: -20px;         /* 紧贴上方的图片 */
+            margin-bottom: 30px;
+            color: #666;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.8rem;
         }
         
         footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: "Courier New", monospace; font-size: 0.75rem; color: #888; }
@@ -104,9 +126,10 @@
     </div>
 
     <script>
-        const postFiles = ['post2.md', 'post1.md']; // 在此添加文章名
+        // 【档案清单】已帮你同步登记 post2.md
+        const postFiles = ['post2.md', 'post1.md']; 
 
-        // 1. 加载文章列表
+        // 1. 加载文章列表逻辑
         async function loadPosts(filterField = null) {
             showIndex();
             const listElement = document.getElementById('post-list');
@@ -138,26 +161,18 @@
             }
         }
 
-       // 2. 自动加载 Daily Log（同步你的书写顺序）
+        // 2. 加载 Daily Log 逻辑
         async function loadDailyLogs() {
             const logContainer = document.getElementById('log-container');
             try {
                 const response = await fetch('daily-log.md');
                 const text = await response.text();
-                
-                // 按照 ### 分隔，并过滤掉空行
                 let entries = text.split('###').map(e => e.trim()).filter(e => e !== '');
-                
                 logContainer.innerHTML = '';
-                
-                // 【核心修改】：删掉了 .reverse()
-                // 因为你在 md 里已经把最新的写在最上面了，所以这里直接按顺序读取即可
                 entries.slice(0, 4).forEach(entry => {
                     const lines = entry.split('\n');
                     const date = lines[0].trim();
-                    // 将剩余行合并为内容
                     const content = lines.slice(1).join('<br>').trim();
-                    
                     const div = document.createElement('div');
                     div.className = 'log-note';
                     div.innerHTML = `<strong>${date}</strong>${content}`;
@@ -167,7 +182,7 @@
                 logContainer.innerHTML = '<p>暂无新记录</p>';
             }
         }
-        
+
         function extractMeta(text, key) {
             const regex = new RegExp(`${key}:\\s*(.*)`);
             const match = text.match(regex);
@@ -196,7 +211,7 @@
         }
 
         loadPosts();
-        loadDailyLogs(); // 启动加载
+        loadDailyLogs();
     </script>
 </body>
 </html>
