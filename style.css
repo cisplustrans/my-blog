@@ -131,7 +131,7 @@ header {
     font-size: 0.8rem;
 }
 
-footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-size: 0.7rem; color: #888; text-align: center; }
+footer { margin-top: 80px; padding-top: 20px; font-family: Consolas, Monaco, monospace; font-size: 0.7rem; color: #888; text-align: center; }
 
 /* --- 4. 悬浮交互动效 (Hover Effects) --- */
 .site-title:hover {
