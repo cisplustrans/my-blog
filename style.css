@@ -3,8 +3,9 @@ body {
     background-color: #FAF8F2;
     background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
     color: #1a1a1a;
-    font-family: Georgia, "Times New Roman", serif; 
-    font-variant-numeric: slashed-zero; /* 强制唤醒字体的斜杠零特性 */
+    /* 加入 ui-serif 配合 HTML 的 zh-CN 召唤苹果古典宋体 */
+    font-family: Georgia, "Times New Roman", ui-serif, "Songti SC", "STSong", "华文宋体", "SimSun", "宋体", serif; 
+    font-variant-numeric: slashed-zero;
     line-height: 1.8;
     margin: 0;
     padding: 20px;
@@ -27,7 +28,6 @@ body {
 header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
 .site-title { font-size: 3rem; font-weight: bold; text-transform: uppercase; letter-spacing: -1px; margin: 0; font-family: "Times New Roman", Times, serif; cursor: pointer; }
 
-/* 第 1 处修改：导航栏 */
 .nav-links { margin-top: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-weight: bold; font-size: 0.9rem; }
 .nav-links a { color: #1a1a1a; text-decoration: none; margin-right: 30px; cursor: pointer; padding: 2px 5px; display: inline-block; }
 .nav-links a:hover { background-color: #1a1a1a; color: white; }
@@ -36,10 +36,14 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 
 /* 文章列表卡片 */
 .post-card { margin-bottom: 50px; cursor: pointer; border-bottom: 1px solid #f2f2f2; padding-bottom: 30px; }
-.post-card h2 { font-size: 1.8rem; margin: 0 0 10px 0; line-height: 1.3; font-family: Georgia, serif; }
+.post-card h2 { 
+    font-size: 1.8rem; 
+    margin: 0 0 10px 0; 
+    line-height: 1.3; 
+    font-family: Georgia, ui-serif, "Songti SC", "STSong", "华文宋体", "SimSun", "宋体", serif; 
+}
 .post-excerpt { font-size: 1.05rem; color: #444; text-align: justify; margin: 15px 0; opacity: 0.85; }
 
-/* 第 2 处修改：文章标签与日期 */
 .post-metadata {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace;
     font-size: 0.75rem;
@@ -50,7 +54,6 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .meta-item { background: #f0f0f0; padding: 2px 6px; text-transform: uppercase; }
 
 /* 侧栏 Daily Log */
-/* 第 3 处修改：侧边栏整体字体 */
 .sidebar-log { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; border-left: 1px solid #ddd; padding-left: 30px; }
 .sidebar-log h3 { font-size: 1.1rem; border-bottom: 1px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 20px; }
 .log-note { font-size: 0.85rem; margin-bottom: 25px; line-height: 1.5; }
@@ -63,7 +66,6 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
     .site-title { font-size: 1.8rem; letter-spacing: 0; }
     .nav-links a { margin-right: 15px; margin-bottom: 10px; font-size: 0.8rem; }
     
-    /* 关键：双栏变单栏 */
     .layout-grid { grid-template-columns: 1fr; gap: 40px; }
     .sidebar-log { border-left: none; padding-left: 0; border-top: 1px solid #ddd; padding-top: 30px; }
     
@@ -72,8 +74,6 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 
 /* --- 3. 文章内容与图片排版 --- */
 #content-view { display: none; }
-
-/* 第 4 处修改：返回按钮 */
 .back-btn { 
     cursor: pointer; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-weight: bold; 
     margin-bottom: 30px; display: inline-block; background: #1a1a1a; color: white; padding: 5px 15px;
@@ -97,33 +97,35 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
     margin-top: -5px;
     margin-bottom: 40px;
     color: #666;
-    /* 第 5 处修改：图片下方的小字说明 */
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace;
     font-size: 0.8rem;
 }
 
-/* 第 6 处修改（附加）：页脚信息 */
 footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-size: 0.7rem; color: #888; text-align: center; }
 
 /* --- 4. 悬浮交互动效 (Hover Effects) --- */
-
-/* 1. 顶部主标题的悬浮下划线 */
 .site-title:hover {
     text-decoration: underline;
-    text-underline-offset: 8px; /* 让下划线距离文字远一点，更有空间感 */
-    text-decoration-thickness: 2px; /* 下划线稍微加粗 */
+    text-underline-offset: 8px;
+    text-decoration-thickness: 2px;
 }
 
-/* 2. 文章卡片标题的悬浮下划线 */
 .post-card:hover h2 {
     text-decoration: underline;
-    text-underline-offset: 6px; /* 距离稍微再拉开一点点 */
-    text-decoration-thickness: 1px; /* 关键：强制细线，保持精致感 */
-    text-decoration-color: #555; /* 颜色稍微调灰一点，不要死黑，更融入纸张 */
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #555;
 }
 
 /* --- 5. 正文文本强调 (Typography Emphasis) --- */
 #article-body strong {
-    font-weight: 900; /* 强制使用字体的最粗字重 */
-    color: #000000; /* 使用纯黑，与正文的 #1a1a1a 形成微妙的灰度对比 */
+    font-weight: 900;
+    color: #000000;
+}
+
+/* --- 6. 苹果 iOS 专属排版修复 (iOS Safari Hack) --- */
+@supports (-webkit-touch-callout: none) {
+    .post-card h2 {
+        font-weight: normal; /* 卸下 iOS 的强制粗体包袱，唤醒古典宋体 */
+    }
 }
