@@ -96,3 +96,19 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 }
 
 footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: "Courier New", monospace; font-size: 0.7rem; color: #888; text-align: center; }
+
+/* --- 4. 悬浮交互动效 (Hover Effects) --- */
+
+/* 1. 顶部主标题的悬浮下划线 */
+.site-title:hover {
+    text-decoration: underline;
+    text-underline-offset: 8px; /* 让下划线距离文字远一点，更有空间感 */
+    text-decoration-thickness: 2px; /* 下划线稍微加粗 */
+}
+
+/* 2. 文章卡片标题的悬浮下划线 */
+/* 这里设置为：只要鼠标移入整张卡片范围，标题就会出现下划线 */
+.post-card:hover h2 {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
