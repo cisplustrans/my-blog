@@ -118,18 +118,38 @@ async function loadDailyLogs() {
     }
 }
 
-/* --- 4. 视图切换与正文渲染 --- */
+/* --- 4. 视图切换与正文渲染 (含字数统计算法) --- */
+
+// 辅助函数：计算中文字数与阅读时间
+function calculateReadingTime(text) {
+    // 简单剥离掉 Markdown 符号，统计纯字符长度
+    const cleanText = text.replace(/[*_#`\[\]()]/g, '');
+    const wordCount = cleanText.length;
+    // 假设中文阅读速度为 350 字/分钟
+    const readTime = Math.ceil(wordCount / 350); 
+    return { wordCount, readTime };
+}
+
 function showPost(markdownContent, title, date, loc, field) {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
     
+    // 调用算法得出字数和时间
+    const { wordCount, readTime } = calculateReadingTime(markdownContent);
+    
     document.getElementById('post-header-info').innerHTML = `
         <div class="post-metadata"><span class="meta-item">${field}</span><span class="meta-item">${loc}</span><span class="meta-item">${date}</span></div>
-        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">${title}</h1>
+        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
+        <div style="font-family: Consolas, Monaco, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
+            WORDS: ${wordCount} / EST. READ: ${readTime} MIN
+        </div>
     `;
     
     // 正文渲染
     document.getElementById('article-body').innerHTML = marked.parse(markdownContent);
+    
+    // 每次打开新文章，重置进度条并回到顶部
+    document.getElementById('reading-progress').style.width = '0%';
     window.scrollTo(0, 0);
 }
 
@@ -140,12 +160,11 @@ function showIndex() {
 }
 
 function showAbout() {
-    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2005', 'SHENZHEN', 'PROFILE');
+    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
 }
 
 /* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
 const renderer = {
-    // 兼容最新版 marked.js 的解析规则
     image(hrefOrToken, title, text) {
         const isToken = typeof hrefOrToken === 'object';
         const src = isToken ? hrefOrToken.href : hrefOrToken;
@@ -154,11 +173,28 @@ const renderer = {
 
         const titleAttr = imgTitle ? `title="${imgTitle}"` : '';
         const altAttr = imgAlt ? `alt="${imgAlt}"` : '';
-        
         return `<img src="${src}" ${altAttr} ${titleAttr} loading="lazy">`;
     }
 };
 marked.use({ renderer });
+
+/* --- 6. 顶部阅读进度条引擎 --- */
+// 凭空创建一个 div 塞进网页里，不需要你去改 index.html
+const progressBar = document.createElement('div');
+progressBar.id = 'reading-progress';
+document.body.appendChild(progressBar);
+
+// 监听鼠标滚动事件
+window.addEventListener('scroll', () => {
+    // 只有在正文页面才计算进度
+    if (document.getElementById('content-view').style.display === 'block') {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        // 避免极短文章除以 0 导致报错
+        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        document.getElementById('reading-progress').style.width = progress + '%';
+    }
+});
 
 // 启动执行
 loadPosts();
