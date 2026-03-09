@@ -67,7 +67,7 @@ async function loadPosts(filterField = null) {
     }
 }
 
-/* --- 3. 侧栏日志加载器 --- */
+/* --- 3. 侧栏日志加载器 (朋友圈内联展开模式) --- */
 async function loadDailyLogs() {
     const logContainer = document.getElementById('log-container');
     try {
@@ -75,13 +75,42 @@ async function loadDailyLogs() {
         const text = await response.text();
         let entries = text.split('###').map(e => e.trim()).filter(e => e !== '');
         logContainer.innerHTML = '';
-        entries.slice(0, 4).forEach(entry => {
+        
+        entries.slice(0, 5).forEach(entry => {
             const lines = entry.split('\n');
             const date = lines[0].trim();
-            const content = lines.slice(1).join('<br>').trim();
+            // 提取完整正文
+            const fullContent = lines.slice(1).join('\n').trim();
+            
+            // 制作纯文本摘要 (将图片替换为 [图片] 字样)
+            let previewText = fullContent.replace(/!\[.*?\]\(.*?\)/g, '[图片]');
+            previewText = previewText.replace(/[*_#`]/g, '').substring(0, 42) + (previewText.length > 42 ? '...' : '');
+
+            // 创建外层容器
             const div = document.createElement('div');
             div.className = 'log-note';
-            div.innerHTML = `<strong>${date}</strong>${content}`;
+            
+            // 创建可点击的头部（包含日期和摘要）
+            const header = document.createElement('div');
+            header.className = 'log-header';
+            header.innerHTML = `<strong>${date}</strong><div class="log-preview">${previewText}</div>`;
+            
+            // 创建隐藏的完整内容区域 (调用 marked 解析器)
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'log-content';
+            contentDiv.style.display = 'none'; // 默认折叠
+            contentDiv.innerHTML = marked.parse(fullContent);
+
+            // 核心交互：点击切换展开/折叠状态
+            header.onclick = () => {
+                const isHidden = contentDiv.style.display === 'none';
+                contentDiv.style.display = isHidden ? 'block' : 'none';
+                // 展开时隐藏摘要，折叠时恢复摘要
+                header.querySelector('.log-preview').style.display = isHidden ? 'none' : 'block';
+            };
+
+            div.appendChild(header);
+            div.appendChild(contentDiv);
             logContainer.appendChild(div);
         });
     } catch (e) {
