@@ -37,4 +37,5 @@ I could offer some irresponsible answers, but you would likely forget them withi
 
 University is precisely the best opportunity for you to discover the answers to these questions within the endless struggle and confrontation with yourself.
 
+
 Next time you find yourself in a "useless class," consider this: some efforts do not require immediate returns. Those unintentional explorations and reflections might just be the most vital nourishment for your growth.
