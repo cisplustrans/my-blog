@@ -25,8 +25,15 @@ body {
 }
 
 header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
-.site-title { font-size: 3rem; font-weight: bold; text-transform: uppercase; letter-spacing: -1px; margin: 0; font-family: "Times New Roman", Times, serif; cursor: pointer; }
-
+.site-title { 
+    font-size: 2rem; 
+    font-weight: normal; /* 去掉粗体，回归纸质原本的纤细 */
+    text-transform: uppercase; 
+    letter-spacing: 12px; /* 极端拉开的字距，灵魂所在 */
+    margin: 0; 
+    font-family: Georgia, "Times New Roman", serif; 
+    cursor: pointer; 
+}
 .nav-links { margin-top: 20px; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
 .nav-links a { color: #1a1a1a; text-decoration: none; margin-right: 30px; cursor: pointer; padding: 2px 5px; display: inline-block; }
 .nav-links a:hover { background-color: #1a1a1a; color: white; }
