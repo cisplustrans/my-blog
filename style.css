@@ -157,6 +157,21 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 .log-content p {
     margin-bottom: 0.8em;
 }
+
+/* 语言切换标签样式 */
+.lang-toggle {
+    margin-left: auto; /* 关键：将其推到元数据栏的最右侧 */
+    cursor: pointer;
+    color: #1a1a1a;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.lang-toggle:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: 0.6;
+}
+
 /* --- 7. 全局极简滚动条 (Custom Scrollbar) --- */
 /* 接管 Windows 等设备的默认滚动条，Mac 设备本身会智能隐藏 */
 ::-webkit-scrollbar {
