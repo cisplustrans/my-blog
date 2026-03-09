@@ -145,11 +145,17 @@ function showAbout() {
 
 /* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
 const renderer = {
-    // 拦截图片生成过程，强制注入 loading="lazy"
-    image(href, title, text) {
-        const titleAttr = title ? `title="${title}"` : '';
-        const altAttr = text ? `alt="${text}"` : '';
-        return `<img src="${href}" ${altAttr} ${titleAttr} loading="lazy">`;
+    // 兼容最新版 marked.js 的解析规则
+    image(hrefOrToken, title, text) {
+        const isToken = typeof hrefOrToken === 'object';
+        const src = isToken ? hrefOrToken.href : hrefOrToken;
+        const imgTitle = isToken ? hrefOrToken.title : title;
+        const imgAlt = isToken ? hrefOrToken.text : text;
+
+        const titleAttr = imgTitle ? `title="${imgTitle}"` : '';
+        const altAttr = imgAlt ? `alt="${imgAlt}"` : '';
+        
+        return `<img src="${src}" ${altAttr} ${titleAttr} loading="lazy">`;
     }
 };
 marked.use({ renderer });
