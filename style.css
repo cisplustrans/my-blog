@@ -3,8 +3,9 @@ body {
     background-color: #FAF8F2;
     background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
     color: #1a1a1a;
-    font-family: Georgia, "Times New Roman", serif; 
-    font-variant-numeric: slashed-zero; /* 强制唤醒字体的斜杠零特性 */
+    /* 关键升级：在 Georgia 后面加入苹果和 Windows 的经典宋体 */
+    font-family: Georgia, "Times New Roman", "Songti SC", "STSong", "华文宋体", "SimSun", "宋体", serif; 
+    font-variant-numeric: slashed-zero;
     line-height: 1.8;
     margin: 0;
     padding: 20px;
@@ -36,7 +37,13 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 
 /* 文章列表卡片 */
 .post-card { margin-bottom: 50px; cursor: pointer; border-bottom: 1px solid #f2f2f2; padding-bottom: 30px; }
-.post-card h2 { font-size: 1.8rem; margin: 0 0 10px 0; line-height: 1.3; font-family: Georgia, serif; }
+.post-card h2 { 
+    font-size: 1.8rem; 
+    margin: 0 0 10px 0; 
+    line-height: 1.3; 
+    /* 同样补齐宋体矩阵 */
+    font-family: Georgia, "Songti SC", "STSong", "华文宋体", "SimSun", "宋体", serif; 
+}
 .post-excerpt { font-size: 1.05rem; color: #444; text-align: justify; margin: 15px 0; opacity: 0.85; }
 
 /* 第 2 处修改：文章标签与日期 */
