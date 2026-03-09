@@ -1,5 +1,5 @@
 ---
-title: 编曲、采样与神性：坎耶·维斯特 (Kanye West) 专辑主观评价记录
+title: 编曲、采样与神性：坎耶·维斯特专辑主观评价记录
 date: 2025-12-04
 location: GUANGZHOU
 field: VIEWPOINTS
