@@ -126,10 +126,13 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 /* --- 6. 侧栏朋友圈交互样式 --- */
 .log-header {
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    /* 删除了之前的 transition 淡化过渡 */
 }
 .log-header:hover {
-    opacity: 0.6;
+    text-decoration: underline;
+    text-underline-offset: 4px; /* 日志字体较小，偏移量设为 4px 刚好贴合 */
+    text-decoration-thickness: 1px; /* 保持精致的极细线 */
+    text-decoration-color: #555; /* 颜色和左侧文章列表的悬浮保持一致 */
 }
 .log-preview {
     color: #666;
