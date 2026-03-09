@@ -5,8 +5,8 @@ const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md'];
 function parseMarkdown(text) {
     const result = { meta: {}, content: text };
     
-    // 独家精密切割：只匹配文件最顶部的 --- 属性区块 ---
-    const match = text.match(/^---\n([\s\S]*?)\n---/);
+    // 升级版切割雷达：完美兼容 Windows 换行符(\r\n) 和文件开头的隐形空格(BOM)
+    const match = text.match(/^\s*---\r?\n([\s\S]*?)\r?\n---/);
 
     if (match) {
         const metaText = match[1];
