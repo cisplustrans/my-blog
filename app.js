@@ -114,6 +114,20 @@ function showAbout() {
     showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
 }
 
+/* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
+const renderer = {
+    // 拦截图片生成过程，强制注入 loading="lazy"
+    image(href, title, text) {
+        const titleAttr = title ? `title="${title}"` : '';
+        const altAttr = text ? `alt="${text}"` : '';
+        return `<img src="${href}" ${altAttr} ${titleAttr} loading="lazy">`;
+    }
+};
+marked.use({ renderer });
+
+// 启动执行
+loadPosts();
+loadDailyLogs();
 // 启动执行
 loadPosts();
 loadDailyLogs();
