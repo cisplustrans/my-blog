@@ -122,10 +122,8 @@ async function loadDailyLogs() {
 
 // 辅助函数：计算中文字数与阅读时间
 function calculateReadingTime(text) {
-    // 简单剥离掉 Markdown 符号，统计纯字符长度
     const cleanText = text.replace(/[*_#`\[\]()]/g, '');
     const wordCount = cleanText.length;
-    // 假设中文阅读速度为 350 字/分钟
     const readTime = Math.ceil(wordCount / 350); 
     return { wordCount, readTime };
 }
@@ -147,9 +145,6 @@ function showPost(markdownContent, title, date, loc, field) {
     
     // 正文渲染
     document.getElementById('article-body').innerHTML = marked.parse(markdownContent);
-    
-    // 每次打开新文章，重置进度条并回到顶部
-    document.getElementById('reading-progress').style.width = '0%';
     window.scrollTo(0, 0);
 }
 
@@ -177,24 +172,6 @@ const renderer = {
     }
 };
 marked.use({ renderer });
-
-/* --- 6. 顶部阅读进度条引擎 --- */
-// 凭空创建一个 div 塞进网页里，不需要你去改 index.html
-const progressBar = document.createElement('div');
-progressBar.id = 'reading-progress';
-document.body.appendChild(progressBar);
-
-// 监听鼠标滚动事件
-window.addEventListener('scroll', () => {
-    // 只有在正文页面才计算进度
-    if (document.getElementById('content-view').style.display === 'block') {
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        // 避免极短文章除以 0 导致报错
-        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-        document.getElementById('reading-progress').style.width = progress + '%';
-    }
-});
 
 // 启动执行
 loadPosts();
