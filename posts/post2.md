@@ -1,7 +1,7 @@
 ---
 title: 伴我同行：关于成长与寻找
 date: 2025-10-26
-location: SHENZHEN
+location: GUANGZHOU
 field: OBSERVATIONS
 description: 基于史蒂芬·金小说的电影改编，探讨少年时代的友谊与终将抵达的彼岸。
 ---
@@ -42,6 +42,7 @@ coming of age（成长）指的是以人物——通常是青少年，从童年/
 
 
 本次的观察就告一段落了，祝你度过一个愉快的周末尾巴。
+
 
 
 
