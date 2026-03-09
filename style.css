@@ -176,3 +176,15 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555; /* 鼠标悬浮在滚动条上时稍微变灰 */
 }
+
+/* --- 8. 顶部阅读进度条 --- */
+#reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px; /* 极细的 3 像素黑线 */
+    background-color: #1a1a1a;
+    width: 0%; /* 初始宽度为 0 */
+    z-index: 9999; /* 保证它永远在最上层 */
+    transition: width 0.1s ease; /* 丝滑的跟随动画 */
+}
