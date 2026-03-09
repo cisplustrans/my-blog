@@ -4,7 +4,7 @@ body {
     background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
     color: #1a1a1a;
     font-family: Georgia, "Times New Roman", serif; 
-    font-variant-numeric: slashed-zero; /* 强制唤醒字体的斜杠零特性 */
+    font-variant-numeric: slashed-zero;
     line-height: 1.8;
     margin: 0;
     padding: 20px;
@@ -39,7 +39,7 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .post-excerpt { 
     font-size: 1.05rem; 
     color: #444; 
-    text-align: justify; /* 这里改成了左对齐，完美适配手机端 */
+    text-align: justify; 
     margin: 15px 0; 
     opacity: 0.85; 
 }
@@ -66,7 +66,6 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
     .site-title { font-size: 1.8rem; letter-spacing: 0; }
     .nav-links a { margin-right: 15px; margin-bottom: 10px; font-size: 0.8rem; }
     
-    /* 关键：双栏变单栏 */
     .layout-grid { grid-template-columns: 1fr; gap: 40px; }
     .sidebar-log { border-left: none; padding-left: 0; border-top: 1px solid #ddd; padding-top: 30px; }
     
@@ -105,24 +104,53 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-size: 0.7rem; color: #888; text-align: center; }
 
 /* --- 4. 悬浮交互动效 (Hover Effects) --- */
-
-/* 1. 顶部主标题的悬浮下划线 */
 .site-title:hover {
     text-decoration: underline;
-    text-underline-offset: 8px; /* 让下划线距离文字远一点，更有空间感 */
-    text-decoration-thickness: 2px; /* 下划线稍微加粗 */
+    text-underline-offset: 8px;
+    text-decoration-thickness: 2px;
 }
 
-/* 2. 文章卡片标题的悬浮下划线 */
 .post-card:hover h2 {
     text-decoration: underline;
-    text-underline-offset: 6px; /* 距离稍微再拉开一点点 */
-    text-decoration-thickness: 1px; /* 关键：强制细线，保持精致感 */
-    text-decoration-color: #555; /* 颜色稍微调灰一点，不要死黑，更融入纸张 */
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #555;
 }
 
 /* --- 5. 正文文本强调 (Typography Emphasis) --- */
 #article-body strong {
-    font-weight: 900; /* 强制使用字体的最粗字重 */
-    color: #000000; /* 使用纯黑，与正文的 #1a1a1a 形成微妙的灰度对比 */
+    font-weight: 900;
+    color: #000000;
+}
+
+/* --- 6. 侧栏朋友圈交互样式 --- */
+.log-header {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+.log-header:hover {
+    opacity: 0.6;
+}
+.log-preview {
+    color: #666;
+    line-height: 1.5;
+    margin-top: 3px;
+}
+.log-content {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ccc;
+    font-size: 0.85rem;
+    color: #333;
+}
+.log-content img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #1a1a1a; /* 黑色细线包围 */
+    margin: 10px 0;
+    display: block;
+    box-sizing: border-box; /* 强制图片加了边框也不会超过文字的宽度 */
+}
+.log-content p {
+    margin-bottom: 0.8em;
 }
