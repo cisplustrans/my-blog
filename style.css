@@ -24,19 +24,36 @@ body {
     min-height: 90vh;
 }
 
-header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
+/* 采用左右制衡的 Flex 布局 */
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    border-bottom: 2px solid #1a1a1a; 
+    margin-bottom: 50px; 
+    padding-bottom: 20px; 
+}
 .site-title { 
-    font-size: 3.2rem; /* 明显增大字号，增加分量感 */
-    font-weight: bold; /* 恢复粗体，彻底压住阵脚 */
+    font-size: 3.2rem; 
+    font-weight: bold; 
     text-transform: uppercase; 
-    letter-spacing: 1px; /* 极小的字距，保持文字块的整体性 */
-    line-height: 0.95; /* 极其紧凑的行高，让上下两行字像印章一样贴合 */
+    letter-spacing: 1px; 
+    line-height: 0.95; 
     margin: 0; 
-    font-family: "Times New Roman", Times, Georgia, serif; /* Times 粗体在全大写时极具复古报纸感 */
+    font-family: "Times New Roman", Times, Georgia, serif; 
     cursor: pointer; 
 }
-.nav-links { margin-top: 20px; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
+
+/* 导航栏样式微调 */
+.nav-links { 
+    margin-top: 0; 
+    margin-bottom: 5px; 
+    font-family: Consolas, Monaco, "Courier New", Courier, monospace; 
+    font-weight: bold; 
+    font-size: 0.9rem; 
+}
 .nav-links a { color: #1a1a1a; text-decoration: none; margin-right: 30px; cursor: pointer; padding: 2px 5px; display: inline-block; }
+.nav-links a:last-child { margin-right: 0; } /* 确保最右侧完美贴边，治愈强迫症 */
 .nav-links a:hover { background-color: #1a1a1a; color: white; }
 
 .layout-grid { display: grid; grid-template-columns: 1fr 260px; gap: 60px; }
@@ -71,6 +88,11 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 @media (max-width: 768px) {
     body { padding: 10px; }
     .page-wrapper { padding: 30px 20px; border-right: 3px solid #1a1a1a; }
+    
+    /* 手机端由于屏幕太窄，恢复上下排列，防止 Logo 和导航栏撞车 */
+    header { flex-direction: column; align-items: flex-start; padding-bottom: 20px; }
+    .nav-links { margin-top: 15px; margin-bottom: 0; }
+    
     .site-title { font-size: 1.8rem; letter-spacing: 0; }
     .nav-links a { margin-right: 15px; margin-bottom: 10px; font-size: 0.8rem; }
     
@@ -134,13 +156,12 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 /* --- 6. 侧栏朋友圈交互样式 --- */
 .log-header {
     cursor: pointer;
-    /* 删除了之前的 transition 淡化过渡 */
 }
 .log-header:hover {
     text-decoration: underline;
-    text-underline-offset: 4px; /* 日志字体较小，偏移量设为 4px 刚好贴合 */
-    text-decoration-thickness: 1px; /* 保持精致的极细线 */
-    text-decoration-color: #555; /* 颜色和左侧文章列表的悬浮保持一致 */
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #555;
 }
 .log-preview {
     color: #666;
@@ -157,10 +178,10 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 .log-content img {
     max-width: 100%;
     height: auto;
-    border: 1px solid #1a1a1a; /* 黑色细线包围 */
+    border: 1px solid #1a1a1a;
     margin: 10px 0;
     display: block;
-    box-sizing: border-box; /* 强制图片加了边框也不会超过文字的宽度 */
+    box-sizing: border-box;
 }
 .log-content p {
     margin-bottom: 0.8em;
@@ -168,7 +189,7 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 
 /* 语言切换标签样式 */
 .lang-toggle {
-    margin-left: auto; /* 关键：将其推到元数据栏的最右侧 */
+    margin-left: auto; 
     cursor: pointer;
     color: #1a1a1a;
     font-weight: bold;
@@ -181,21 +202,17 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 }
 
 /* --- 7. 全局极简滚动条 (Custom Scrollbar) --- */
-/* 接管 Windows 等设备的默认滚动条，Mac 设备本身会智能隐藏 */
 ::-webkit-scrollbar {
-    width: 5px;  /* 极细的线条 */
-    height: 5px; /* 如果有横向滚动时的粗细 */
+    width: 5px;  
+    height: 5px; 
 }
-
 ::-webkit-scrollbar-track {
-    background: transparent; /* 轨道完全透明，完美融入纸质背景 */
+    background: transparent; 
 }
-
 ::-webkit-scrollbar-thumb {
-    background-color: #1a1a1a; /* 纯黑的滑块，呼应网站主色调 */
-    border-radius: 0px; /* 拒绝圆角，保持工业档案的冷峻感 */
+    background-color: #1a1a1a; 
+    border-radius: 0px; 
 }
-
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* 鼠标悬浮在滚动条上时稍微变灰 */
+    background-color: #555; 
 }
