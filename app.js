@@ -1,5 +1,32 @@
+// 【唯一的手工操作区】以后每次写了新文章，只需把文件名加到这个数组的最前面即可
 const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md']; 
 
+/* --- 1. 核心档案解析器 (YAML Frontmatter Parser) --- */
+function parseMarkdown(text) {
+    const result = { meta: {}, content: text };
+    
+    // 独家精密切割：只匹配文件最顶部的 --- 属性区块 ---
+    const match = text.match(/^---\n([\s\S]*?)\n---/);
+
+    if (match) {
+        const metaText = match[1];
+        // 切割完成后，将剩余的所有内容安全地划归为正文
+        result.content = text.slice(match[0].length).trim(); 
+
+        // 自动解析属性（兼容大小写和空格）
+        metaText.split('\n').forEach(line => {
+            const colonIndex = line.indexOf(':');
+            if (colonIndex !== -1) {
+                const key = line.slice(0, colonIndex).trim().toLowerCase();
+                const value = line.slice(colonIndex + 1).trim();
+                result.meta[key] = value;
+            }
+        });
+    }
+    return result;
+}
+
+/* --- 2. 自动化生成首页列表 --- */
 async function loadPosts(filterField = null) {
     showIndex();
     const listElement = document.getElementById('post-list');
@@ -8,13 +35,20 @@ async function loadPosts(filterField = null) {
     for (const file of postFiles) {
         try {
             const response = await fetch(`posts/${file}`);
+            if (!response.ok) continue; // 容错：遇到空文件自动跳过
             const text = await response.text();
-            const title = extractMeta(text, 'title') || file;
-            const date = extractMeta(text, 'date') || '2026';
-            const loc = extractMeta(text, 'location') || 'SZ';
-            const field = extractMeta(text, 'field') || 'GENERAL';
-            const description = extractMeta(text, 'description') || '';
 
+            // 召唤解析器，分离皮囊与血肉
+            const { meta, content } = parseMarkdown(text);
+
+            // 智能读取（兼容你以前的写法，如果没有填就给一个默认值）
+            const title = meta.title || file;
+            const date = meta.date || '2026';
+            const loc = meta.location || 'SZ';
+            const field = meta.category || meta.field || 'GENERAL';
+            const description = meta.excerpt || meta.description || '';
+
+            // 分类筛选逻辑
             if (filterField && field.toUpperCase() !== filterField.toUpperCase()) continue;
 
             const card = document.createElement('div');
@@ -25,12 +59,15 @@ async function loadPosts(filterField = null) {
                 <p class="post-excerpt">${description}</p>
                 <div class="post-metadata" style="background:none; color:#999;">DATE: ${date}</div>
             `;
-            card.onclick = () => showPost(text, title, date, loc, field);
+            
+            // 绑定点击事件，将纯净的正文传给渲染器
+            card.onclick = () => showPost(content, title, date, loc, field);
             listElement.appendChild(card);
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error(`Failed to load ${file}:`, e); }
     }
 }
 
+/* --- 3. 侧栏日志加载器 --- */
 async function loadDailyLogs() {
     const logContainer = document.getElementById('log-container');
     try {
@@ -52,21 +89,18 @@ async function loadDailyLogs() {
     }
 }
 
-function extractMeta(text, key) {
-    const regex = new RegExp(`${key}:\\s*(.*)`);
-    const match = text.match(regex);
-    return match ? match[1].trim() : null;
-}
-
-function showPost(markdown, title, date, loc, field) {
-    const content = markdown.split('---').slice(2).join('---');
+/* --- 4. 视图切换与正文渲染 --- */
+function showPost(markdownContent, title, date, loc, field) {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
+    
     document.getElementById('post-header-info').innerHTML = `
         <div class="post-metadata"><span class="meta-item">${field}</span><span class="meta-item">${loc}</span><span class="meta-item">${date}</span></div>
-        <h1 style="font-family: Georgia, serif; border-bottom: 2px solid #333; padding-bottom:10px;">${title}</h1>
+        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">${title}</h1>
     `;
-    document.getElementById('article-body').innerHTML = marked.parse(content);
+    
+    // 正文渲染
+    document.getElementById('article-body').innerHTML = marked.parse(markdownContent);
     window.scrollTo(0, 0);
 }
 
@@ -77,7 +111,7 @@ function showIndex() {
 }
 
 function showAbout() {
-    showPost('---\n---\n# ABO\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
+    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
 }
 
 // 启动执行
