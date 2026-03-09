@@ -157,3 +157,22 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
 .log-content p {
     margin-bottom: 0.8em;
 }
+/* --- 7. 全局极简滚动条 (Custom Scrollbar) --- */
+/* 接管 Windows 等设备的默认滚动条，Mac 设备本身会智能隐藏 */
+::-webkit-scrollbar {
+    width: 5px;  /* 极细的线条 */
+    height: 5px; /* 如果有横向滚动时的粗细 */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* 轨道完全透明，完美融入纸质背景 */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #1a1a1a; /* 纯黑的滑块，呼应网站主色调 */
+    border-radius: 0px; /* 拒绝圆角，保持工业档案的冷峻感 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 鼠标悬浮在滚动条上时稍微变灰 */
+}
