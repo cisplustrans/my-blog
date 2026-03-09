@@ -10,10 +10,8 @@ function parseMarkdown(text) {
 
     if (match) {
         const metaText = match[1];
-        // 切割完成后，将剩余的所有内容安全地划归为正文
         result.content = text.slice(match[0].length).trim(); 
 
-        // 自动解析属性（兼容大小写和空格）
         metaText.split('\n').forEach(line => {
             const colonIndex = line.indexOf(':');
             if (colonIndex !== -1) {
@@ -35,20 +33,17 @@ async function loadPosts(filterField = null) {
     for (const file of postFiles) {
         try {
             const response = await fetch(`posts/${file}`);
-            if (!response.ok) continue; // 容错：遇到空文件自动跳过
+            if (!response.ok) continue; 
             const text = await response.text();
 
-            // 召唤解析器，分离皮囊与血肉
             const { meta, content } = parseMarkdown(text);
 
-            // 智能读取（兼容你以前的写法，如果没有填就给一个默认值）
             const title = meta.title || file;
             const date = meta.date || '2026';
             const loc = meta.location || 'SZ';
             const field = meta.category || meta.field || 'GENERAL';
             const description = meta.excerpt || meta.description || '';
 
-            // 分类筛选逻辑
             if (filterField && field.toUpperCase() !== filterField.toUpperCase()) continue;
 
             const card = document.createElement('div');
@@ -60,8 +55,8 @@ async function loadPosts(filterField = null) {
                 <div class="post-metadata" style="background:none; color:#999;">DATE: ${date}</div>
             `;
             
-            // 绑定点击事件，将纯净的正文传给渲染器
-            card.onclick = () => showPost(content, title, date, loc, field);
+            // 【关键修改】这里增加了 file 参数，告诉渲染器现在读的是哪个文件
+            card.onclick = () => showPost(content, title, date, loc, field, file);
             listElement.appendChild(card);
         } catch (e) { console.error(`Failed to load ${file}:`, e); }
     }
@@ -79,33 +74,26 @@ async function loadDailyLogs() {
         entries.slice(0, 5).forEach(entry => {
             const lines = entry.split('\n');
             const date = lines[0].trim();
-            // 提取完整正文
             const fullContent = lines.slice(1).join('\n').trim();
             
-            // 制作纯文本摘要 (将图片替换为 [图片] 字样)
             let previewText = fullContent.replace(/!\[.*?\]\(.*?\)/g, '[图片]');
             previewText = previewText.replace(/[*_#`]/g, '').substring(0, 42) + (previewText.length > 42 ? '...' : '');
 
-            // 创建外层容器
             const div = document.createElement('div');
             div.className = 'log-note';
             
-            // 创建可点击的头部（包含日期和摘要）
             const header = document.createElement('div');
             header.className = 'log-header';
             header.innerHTML = `<strong>${date}</strong><div class="log-preview">${previewText}</div>`;
             
-            // 创建隐藏的完整内容区域 (调用 marked 解析器)
             const contentDiv = document.createElement('div');
             contentDiv.className = 'log-content';
-            contentDiv.style.display = 'none'; // 默认折叠
+            contentDiv.style.display = 'none'; 
             contentDiv.innerHTML = marked.parse(fullContent);
 
-            // 核心交互：点击切换展开/折叠状态
             header.onclick = () => {
                 const isHidden = contentDiv.style.display === 'none';
                 contentDiv.style.display = isHidden ? 'block' : 'none';
-                // 展开时隐藏摘要，折叠时恢复摘要
                 header.querySelector('.log-preview').style.display = isHidden ? 'none' : 'block';
             };
 
@@ -118,9 +106,8 @@ async function loadDailyLogs() {
     }
 }
 
-/* --- 4. 视图切换与正文渲染 (含字数统计算法) --- */
+/* --- 4. 视图切换与正文渲染 (支持镜像语言切换) --- */
 
-// 辅助函数：计算中文字数与阅读时间
 function calculateReadingTime(text) {
     const cleanText = text.replace(/[*_#`\[\]()]/g, '');
     const wordCount = cleanText.length;
@@ -128,24 +115,56 @@ function calculateReadingTime(text) {
     return { wordCount, readTime };
 }
 
-function showPost(markdownContent, title, date, loc, field) {
+// 【关键修改】增加了 fileName 参数，用于判断中英文
+function showPost(markdownContent, title, date, loc, field, fileName) {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
     
-    // 调用算法得出字数和时间
     const { wordCount, readTime } = calculateReadingTime(markdownContent);
     
+    // 语言切换逻辑：判断当前文件，计算出镜像文件名
+    const isEn = fileName.includes('_en.md');
+    const targetFile = isEn ? fileName.replace('_en.md', '.md') : fileName.replace('.md', '_en.md');
+    const toggleLabel = isEn ? '[ 中 ]' : '[ EN ]';
+
     document.getElementById('post-header-info').innerHTML = `
-        <div class="post-metadata"><span class="meta-item">${field}</span><span class="meta-item">${loc}</span><span class="meta-item">${date}</span></div>
+        <div class="post-metadata">
+            <span class="meta-item">${field}</span>
+            <span class="meta-item">${loc}</span>
+            <span class="meta-item">${date}</span>
+            ${fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
+        </div>
         <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
         <div style="font-family: Consolas, Monaco, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
             WORDS: ${wordCount} / EST. READ: ${readTime} MIN
         </div>
     `;
     
-    // 正文渲染
     document.getElementById('article-body').innerHTML = marked.parse(markdownContent);
     window.scrollTo(0, 0);
+}
+
+// 【新增函数】专门负责在不刷新页面的情况下读取另一个语言版本
+async function switchLanguage(targetFile) {
+    try {
+        const response = await fetch(`posts/${targetFile}`);
+        if (!response.ok) {
+            alert("Translation file not found in archive.");
+            return;
+        }
+        const text = await response.text();
+        const { meta, content } = parseMarkdown(text);
+        
+        const title = meta.title || targetFile;
+        const date = meta.date || '2026';
+        const loc = meta.location || 'SZ';
+        const field = meta.category || meta.field || 'GENERAL';
+        
+        // 重新调用 showPost 渲染新的内容
+        showPost(content, title, date, loc, field, targetFile);
+    } catch (e) {
+        console.error("Language switch failed:", e);
+    }
 }
 
 function showIndex() {
@@ -155,7 +174,8 @@ function showIndex() {
 }
 
 function showAbout() {
-    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
+    // About 页面传一个标记，防止显示语言切换
+    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE', 'ABOUT');
 }
 
 /* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
