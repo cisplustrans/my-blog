@@ -1,4 +1,4 @@
-const postFiles = ['post3.md','post2.md', 'post1.md']; 
+const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md']; 
 
 async function loadPosts(filterField = null) {
     showIndex();
