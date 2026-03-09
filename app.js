@@ -128,6 +128,3 @@ marked.use({ renderer });
 // 启动执行
 loadPosts();
 loadDailyLogs();
-// 启动执行
-loadPosts();
-loadDailyLogs();
