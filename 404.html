@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | FILE NOT FOUND</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 针对 404 页面做一点微调，让内容绝对居中 */
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 60vh;
+        }
+        .error-code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace;
+            font-size: 5rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin: 0 0 10px 0;
+            line-height: 1;
+        }
+        .error-message {
+            font-family: Georgia, ui-serif, "Songti SC", "STSong", "华文宋体", "SimSun", "宋体", serif;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div class="error-container">
+            <h1 class="error-code">404</h1>
+            <p class="error-message">/ 该档案已销毁或未建立 /</p>
+            <div class="back-btn" onclick="window.location.href='/'">[ ← BACK TO INDEX ]</div>
+        </div>
+    </div>
+
+</body>
+</html>
