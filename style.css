@@ -26,12 +26,13 @@ body {
 
 header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
 .site-title { 
-    font-size: 2rem; 
-    font-weight: normal; /* 去掉粗体，回归纸质原本的纤细 */
+    font-size: 3.2rem; /* 明显增大字号，增加分量感 */
+    font-weight: bold; /* 恢复粗体，彻底压住阵脚 */
     text-transform: uppercase; 
-    letter-spacing: 12px; /* 极端拉开的字距，灵魂所在 */
+    letter-spacing: 1px; /* 极小的字距，保持文字块的整体性 */
+    line-height: 0.95; /* 极其紧凑的行高，让上下两行字像印章一样贴合 */
     margin: 0; 
-    font-family: Georgia, "Times New Roman", serif; 
+    font-family: "Times New Roman", Times, Georgia, serif; /* Times 粗体在全大写时极具复古报纸感 */
     cursor: pointer; 
 }
 .nav-links { margin-top: 20px; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
