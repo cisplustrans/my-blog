@@ -77,7 +77,7 @@ function showIndex() {
 }
 
 function showAbout() {
-    showPost('---\n---\n# ABO\n\n坐标深穗两地。主修新材料，对有机化学、宏观经济和 Hip-Hop 审美感兴趣。\n\n这里是我存放观察与观点的数字档案馆。', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
+    showPost('---\n---\n# ABO\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
 }
 
 // 启动执行
