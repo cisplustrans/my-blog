@@ -27,7 +27,8 @@ body {
 header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
 .site-title { font-size: 3rem; font-weight: bold; text-transform: uppercase; letter-spacing: -1px; margin: 0; font-family: "Times New Roman", Times, serif; cursor: pointer; }
 
-.nav-links { margin-top: 20px; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
+/* 第 1 处修改：导航栏 */
+.nav-links { margin-top: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-weight: bold; font-size: 0.9rem; }
 .nav-links a { color: #1a1a1a; text-decoration: none; margin-right: 30px; cursor: pointer; padding: 2px 5px; display: inline-block; }
 .nav-links a:hover { background-color: #1a1a1a; color: white; }
 
@@ -38,8 +39,9 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .post-card h2 { font-size: 1.8rem; margin: 0 0 10px 0; line-height: 1.3; font-family: Georgia, serif; }
 .post-excerpt { font-size: 1.05rem; color: #444; text-align: justify; margin: 15px 0; opacity: 0.85; }
 
+/* 第 2 处修改：文章标签与日期 */
 .post-metadata {
-    font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace;
     font-size: 0.75rem;
     color: #666;
     margin-bottom: 12px;
@@ -48,7 +50,8 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .meta-item { background: #f0f0f0; padding: 2px 6px; text-transform: uppercase; }
 
 /* 侧栏 Daily Log */
-.sidebar-log { font-family: Consolas, Monaco, "Courier New", Courier, monospace; border-left: 1px solid #ddd; padding-left: 30px; }
+/* 第 3 处修改：侧边栏整体字体 */
+.sidebar-log { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; border-left: 1px solid #ddd; padding-left: 30px; }
 .sidebar-log h3 { font-size: 1.1rem; border-bottom: 1px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 20px; }
 .log-note { font-size: 0.85rem; margin-bottom: 25px; line-height: 1.5; }
 .log-note strong { display: block; background: #1a1a1a; color: white; padding: 0 5px; width: fit-content; margin-bottom: 5px; }
@@ -69,8 +72,10 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 
 /* --- 3. 文章内容与图片排版 --- */
 #content-view { display: none; }
+
+/* 第 4 处修改：返回按钮 */
 .back-btn { 
-    cursor: pointer; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; 
+    cursor: pointer; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-weight: bold; 
     margin-bottom: 30px; display: inline-block; background: #1a1a1a; color: white; padding: 5px 15px;
 }
 
@@ -92,11 +97,13 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
     margin-top: -5px;
     margin-bottom: 40px;
     color: #666;
-    font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+    /* 第 5 处修改：图片下方的小字说明 */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace;
     font-size: 0.8rem;
 }
 
-footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-size: 0.7rem; color: #888; text-align: center; }
+/* 第 6 处修改（附加）：页脚信息 */
+footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Courier New", monospace; font-size: 0.7rem; color: #888; text-align: center; }
 
 /* --- 4. 悬浮交互动效 (Hover Effects) --- */
 
@@ -113,4 +120,10 @@ footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-f
     text-underline-offset: 6px; /* 距离稍微再拉开一点点 */
     text-decoration-thickness: 1px; /* 关键：强制细线，保持精致感 */
     text-decoration-color: #555; /* 颜色稍微调灰一点，不要死黑，更融入纸张 */
+}
+
+/* --- 5. 正文文本强调 (Typography Emphasis) --- */
+#article-body strong {
+    font-weight: 900; /* 强制使用字体的最粗字重 */
+    color: #000000; /* 使用纯黑，与正文的 #1a1a1a 形成微妙的灰度对比 */
 }
