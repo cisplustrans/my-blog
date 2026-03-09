@@ -140,7 +140,7 @@ function showIndex() {
 }
 
 function showAbout() {
-    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE');
+    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。音乐/社会/宏观经济', 'ABOUT ME', '2005', 'SHENZHEN', 'PROFILE');
 }
 
 /* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
