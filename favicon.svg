@@ -1,4 +1,16 @@
 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <text x="44" y="82" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle" fill="#1a1a1a">A</text>
-    <text x="56" y="88" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle" fill="none" stroke="#1a1a1a" stroke-width="4">A</text>
+    <style>
+        /* 默认日间模式：极简档案黑 */
+        .solid { fill: #1a1a1a; }
+        .outline { fill: none; stroke: #1a1a1a; stroke-width: 4; }
+        
+        /* 侦测到黑夜模式时：自动反转为高亮白 */
+        @media (prefers-color-scheme: dark) {
+            .solid { fill: #ffffff; }
+            .outline { stroke: #ffffff; }
+        }
+    </style>
+    
+    <text class="solid" x="44" y="82" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle">A</text>
+    <text class="outline" x="56" y="88" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle">A</text>
 </svg>
