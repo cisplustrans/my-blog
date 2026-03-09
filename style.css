@@ -4,6 +4,7 @@ body {
     background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
     color: #1a1a1a;
     font-family: Georgia, "Times New Roman", serif; 
+    font-variant-numeric: slashed-zero; /* 强制唤醒字体的斜杠零特性 */
     line-height: 1.8;
     margin: 0;
     padding: 20px;
@@ -26,7 +27,7 @@ body {
 header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 30px; }
 .site-title { font-size: 3rem; font-weight: bold; text-transform: uppercase; letter-spacing: -1px; margin: 0; font-family: "Times New Roman", Times, serif; cursor: pointer; }
 
-.nav-links { margin-top: 20px; font-family: "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
+.nav-links { margin-top: 20px; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; font-size: 0.9rem; }
 .nav-links a { color: #1a1a1a; text-decoration: none; margin-right: 30px; cursor: pointer; padding: 2px 5px; display: inline-block; }
 .nav-links a:hover { background-color: #1a1a1a; color: white; }
 
@@ -38,7 +39,7 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .post-excerpt { font-size: 1.05rem; color: #444; text-align: justify; margin: 15px 0; opacity: 0.85; }
 
 .post-metadata {
-    font-family: "Courier New", Courier, monospace;
+    font-family: Consolas, Monaco, "Courier New", Courier, monospace;
     font-size: 0.75rem;
     color: #666;
     margin-bottom: 12px;
@@ -47,7 +48,7 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 .meta-item { background: #f0f0f0; padding: 2px 6px; text-transform: uppercase; }
 
 /* 侧栏 Daily Log */
-.sidebar-log { font-family: "Courier New", Courier, monospace; border-left: 1px solid #ddd; padding-left: 30px; }
+.sidebar-log { font-family: Consolas, Monaco, "Courier New", Courier, monospace; border-left: 1px solid #ddd; padding-left: 30px; }
 .sidebar-log h3 { font-size: 1.1rem; border-bottom: 1px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 20px; }
 .log-note { font-size: 0.85rem; margin-bottom: 25px; line-height: 1.5; }
 .log-note strong { display: block; background: #1a1a1a; color: white; padding: 0 5px; width: fit-content; margin-bottom: 5px; }
@@ -69,7 +70,7 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
 /* --- 3. 文章内容与图片排版 --- */
 #content-view { display: none; }
 .back-btn { 
-    cursor: pointer; font-family: "Courier New", monospace; font-weight: bold; 
+    cursor: pointer; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-weight: bold; 
     margin-bottom: 30px; display: inline-block; background: #1a1a1a; color: white; padding: 5px 15px;
 }
 
@@ -91,11 +92,11 @@ header { border-bottom: 2px solid #1a1a1a; margin-bottom: 50px; padding-bottom: 
     margin-top: -5px;
     margin-bottom: 40px;
     color: #666;
-    font-family: "Courier New", Courier, monospace;
+    font-family: Consolas, Monaco, "Courier New", Courier, monospace;
     font-size: 0.8rem;
 }
 
-footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: "Courier New", monospace; font-size: 0.7rem; color: #888; text-align: center; }
+footer { margin-top: 80px; padding-top: 20px; border-top: 1px solid #eee; font-family: Consolas, Monaco, "Courier New", Courier, monospace; font-size: 0.7rem; color: #888; text-align: center; }
 
 /* --- 4. 悬浮交互动效 (Hover Effects) --- */
 
