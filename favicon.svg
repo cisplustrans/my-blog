@@ -11,6 +11,6 @@
         }
     </style>
     
-    <text class="solid" x="44" y="82" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle">A</text>
-    <text class="outline" x="56" y="88" font-family="Georgia, serif" font-weight="bold" font-size="90" text-anchor="middle">A</text>
+    <text class="solid" x="44" y="82" font-family="Georgia, serif" font-weight="normal" font-size="90" text-anchor="middle">A</text>
+    <text class="outline" x="56" y="88" font-family="Georgia, serif" font-weight="normal" font-size="90" text-anchor="middle">A</text>
 </svg>
