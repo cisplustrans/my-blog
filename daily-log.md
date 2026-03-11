@@ -1,6 +1,6 @@
 ### MAR 10, 2026
 这个学期第一次去健身房。
-![健身房](images/daily_01.jpg)
+![健身房](images/daily1_01.jpg)
 
 ### MAR 09, 2026
 为档案馆挂上了正式的门牌号：aboarchive.site。做了一些细小的改动，网站易读性更好了。
