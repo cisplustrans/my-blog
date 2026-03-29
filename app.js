@@ -175,7 +175,7 @@ function showIndex() {
 
 function showAbout() {
     // About 页面传一个标记，防止显示语言切换
-    showPost('# Abo\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE', 'ABOUT');
+    showPost('# Abel\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE', 'ABOUT');
 }
 
 /* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
