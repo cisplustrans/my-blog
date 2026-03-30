@@ -72,20 +72,48 @@ async function loadPosts(filterField = null) {
 
 /* --- 3. 侧栏加载器群 (日志、音乐、书籍分页逻辑) --- */
 
-// 通用分页渲染器
+// 通用分页渲染器 (支持智能折叠)
 function renderPagination(totalPages, currentPage, loadFn, container) {
-    if (totalPages > 1) {
-        const paginationDiv = document.createElement('div');
-        paginationDiv.className = 'log-pagination';
-        for (let i = 1; i <= totalPages; i++) {
+    if (totalPages <= 1) return;
+
+    const paginationDiv = document.createElement('div');
+    paginationDiv.className = 'log-pagination';
+
+    // 计算需要显示的页码数组
+    let pages = [];
+    if (totalPages <= 5) {
+        // 如果总页数不多于 5 页，全部显示
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+        // 如果页数很多，进行智能折叠
+        if (currentPage <= 3) {
+            pages = [1, 2, 3, '...', totalPages];
+        } else if (currentPage >= totalPages - 2) {
+            pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
+        } else {
+            pages = [1, '...', currentPage, '...', totalPages];
+        }
+    }
+
+    // 渲染页码和省略号
+    pages.forEach(p => {
+        if (p === '...') {
+            const ellipsis = document.createElement('span');
+            ellipsis.style.color = '#ccc';
+            ellipsis.style.letterSpacing = '2px';
+            ellipsis.style.margin = '0 2px';
+            ellipsis.innerText = '...';
+            paginationDiv.appendChild(ellipsis);
+        } else {
             const pageSpan = document.createElement('span');
-            pageSpan.className = `page-num ${i === currentPage ? 'active' : ''}`;
-            pageSpan.innerText = `[ ${i} ]`;
-            pageSpan.onclick = () => loadFn(i);
+            pageSpan.className = `page-num ${p === currentPage ? 'active' : ''}`;
+            pageSpan.innerText = `[ ${p} ]`;
+            pageSpan.onclick = () => loadFn(p);
             paginationDiv.appendChild(pageSpan);
         }
-        container.appendChild(paginationDiv);
-    }
+    });
+
+    container.appendChild(paginationDiv);
 }
 
 async function loadDailyLogs(page = 1) {
