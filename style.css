@@ -217,3 +217,52 @@ footer { margin-top: 80px; padding-top: 20px; font-family: Consolas, Monaco, mon
 ::-webkit-scrollbar-thumb:hover {
     background-color: #555; 
 }
+
+/* --- 8. About页面侧栏及分页样式补丁 --- */
+.sidebar-about h3.sidebar-title {
+    font-size: 1.1rem; 
+    border-bottom: 1px solid #1a1a1a; 
+    padding-bottom: 10px; 
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+/* 覆盖 markdown 内部标题样式，适配窄侧栏 */
+.sidebar-about .archive-container h3 {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+.sidebar-about .archive-container p {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+/* 日志分页交互样式 */
+.log-pagination {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace;
+}
+.page-num {
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s ease;
+}
+.page-num:hover, .page-num.active {
+    color: #1a1a1a;
+    font-weight: bold;
+}
+.page-num.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
