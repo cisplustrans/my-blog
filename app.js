@@ -1,5 +1,5 @@
 // 【唯一的手工操作区】以后每次写了新文章，只需把文件名加到这个数组的最前面即可
-const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md']; 
+const postFiles = ['post5.md', 'post4.md', 'post3.md', 'post2.md', 'post1.md']; 
 
 // --- 全局状态管理 ---
 let allLogs = [];
