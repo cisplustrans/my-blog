@@ -49,6 +49,9 @@ Aminé.
 ### bloom
 mgk.
 
+### Lotus
+Little Simz.
+
 ### CAN'T RUSH GREATNESS
 Central Cee.
 
@@ -79,7 +82,7 @@ Eagles.
 ### Harmonium XLV
 Harmonium.
 
-### Les Cing Saisons
+### Les Cinq Saisons
 Harmonium.
 
 ### L'heptade XL 
@@ -87,9 +90,6 @@ Harmonium.
 
 ### In the Court of the CrimsonKing
 KingCrimson.
-
-### Lotus
-Little Simz.
 
 ### We Are The People
 Martin Garrix.
