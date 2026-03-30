@@ -120,27 +120,6 @@ function renderPagination(totalPages, currentPage, loadFn, container) {
     container.appendChild(paginationDiv);
 }
 
-    // 渲染页码和省略号
-    pages.forEach(p => {
-        if (p === '...') {
-            const ellipsis = document.createElement('span');
-            ellipsis.style.color = '#ccc';
-            ellipsis.style.letterSpacing = '2px';
-            ellipsis.style.margin = '0 2px';
-            ellipsis.innerText = '...';
-            paginationDiv.appendChild(ellipsis);
-        } else {
-            const pageSpan = document.createElement('span');
-            pageSpan.className = `page-num ${p === currentPage ? 'active' : ''}`;
-            pageSpan.innerText = `[ ${p} ]`;
-            pageSpan.onclick = () => loadFn(p);
-            paginationDiv.appendChild(pageSpan);
-        }
-    });
-
-    container.appendChild(paginationDiv);
-}
-
 async function loadDailyLogs(page = 1) {
     const logContainer = document.getElementById('log-container');
     currentLogPage = page; 
@@ -207,7 +186,6 @@ async function loadMusicArchive(page = 1) {
             const response = await fetch('music.md');
             if (!response.ok) throw new Error("File not found");
             const text = await response.text();
-            // 按照 ### 切割，并把 ### 补回去以便 marked 渲染
             allMusic = text.split('###').map(e => e.trim()).filter(e => e !== '').map(e => '### ' + e);
         }
 
