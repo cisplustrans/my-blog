@@ -1,13 +1,20 @@
 // 【唯一的手工操作区】以后每次写了新文章，只需把文件名加到这个数组的最前面即可
 const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md']; 
+
+// --- 全局状态管理 ---
 let allLogs = [];
 const logsPerPage = 5; 
 let currentLogPage = 1;
 
+let allMusic = [];
+let allBooks = [];
+const archivePerPage = 4; // 音乐和书单每页显示 4 个
+let currentMusicPage = 1;
+let currentBookPage = 1;
+
 /* --- 1. 核心档案解析器 (YAML Frontmatter Parser) --- */
 function parseMarkdown(text) {
     const result = { meta: {}, content: text };
-    
     const match = text.match(/^\s*---\r?\n([\s\S]*?)\r?\n---/);
 
     if (match) {
@@ -63,7 +70,24 @@ async function loadPosts(filterField = null) {
     }
 }
 
-/* --- 3. 侧栏日志加载器 (支持分页) --- */
+/* --- 3. 侧栏加载器群 (日志、音乐、书籍分页逻辑) --- */
+
+// 通用分页渲染器
+function renderPagination(totalPages, currentPage, loadFn, container) {
+    if (totalPages > 1) {
+        const paginationDiv = document.createElement('div');
+        paginationDiv.className = 'log-pagination';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageSpan = document.createElement('span');
+            pageSpan.className = `page-num ${i === currentPage ? 'active' : ''}`;
+            pageSpan.innerText = `[ ${i} ]`;
+            pageSpan.onclick = () => loadFn(i);
+            paginationDiv.appendChild(pageSpan);
+        }
+        container.appendChild(paginationDiv);
+    }
+}
+
 async function loadDailyLogs(page = 1) {
     const logContainer = document.getElementById('log-container');
     currentLogPage = page; 
@@ -82,11 +106,9 @@ async function loadDailyLogs(page = 1) {
         }
 
         const startIndex = (currentLogPage - 1) * logsPerPage;
-        const endIndex = startIndex + logsPerPage;
-        const currentLogs = allLogs.slice(startIndex, endIndex);
+        const currentLogs = allLogs.slice(startIndex, startIndex + logsPerPage);
 
         logContainer.innerHTML = ''; 
-
         currentLogs.forEach(entry => {
             const lines = entry.split('\n');
             const date = lines[0].trim();
@@ -118,45 +140,71 @@ async function loadDailyLogs(page = 1) {
             logContainer.appendChild(div);
         });
 
-        // 渲染分页控件
-        const totalPages = Math.ceil(allLogs.length / logsPerPage);
-        if (totalPages > 1) {
-            const paginationDiv = document.createElement('div');
-            paginationDiv.className = 'log-pagination';
-            for (let i = 1; i <= totalPages; i++) {
-                const pageSpan = document.createElement('span');
-                pageSpan.className = `page-num ${i === currentLogPage ? 'active' : ''}`;
-                pageSpan.innerText = `[ ${i} ]`;
-                pageSpan.onclick = () => loadDailyLogs(i);
-                paginationDiv.appendChild(pageSpan);
-            }
-            logContainer.appendChild(paginationDiv);
-        }
-
-    } catch (e) {
-        logContainer.innerHTML = '<p>FAILED TO LOAD ARCHIVE</p>';
-    }
+        renderPagination(Math.ceil(allLogs.length / logsPerPage), currentLogPage, loadDailyLogs, logContainer);
+    } catch (e) { logContainer.innerHTML = '<p>FAILED TO LOAD ARCHIVE</p>'; }
 }
 
-/* --- 4. 全新的 showAbout 渲染引擎 (引入左右双栏排版) --- */
-async function showAbout() {
+async function loadMusicArchive(page = 1) {
+    const container = document.getElementById('music-container');
+    if (!container) return;
+    currentMusicPage = page;
+
+    try {
+        if (allMusic.length === 0) {
+            const response = await fetch('music.md');
+            if (!response.ok) throw new Error("File not found");
+            const text = await response.text();
+            // 按照 ### 切割，并把 ### 补回去以便 marked 渲染
+            allMusic = text.split('###').map(e => e.trim()).filter(e => e !== '').map(e => '### ' + e);
+        }
+
+        const startIndex = (currentMusicPage - 1) * archivePerPage;
+        const currentItems = allMusic.slice(startIndex, startIndex + archivePerPage);
+        
+        container.innerHTML = marked.parse(currentItems.join('\n\n'));
+        renderPagination(Math.ceil(allMusic.length / archivePerPage), currentMusicPage, loadMusicArchive, container);
+
+    } catch (e) { container.innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: music.md</p>'; }
+}
+
+async function loadBookArchive(page = 1) {
+    const container = document.getElementById('books-container');
+    if (!container) return;
+    currentBookPage = page;
+
+    try {
+        if (allBooks.length === 0) {
+            const response = await fetch('books.md');
+            if (!response.ok) throw new Error("File not found");
+            const text = await response.text();
+            allBooks = text.split('###').map(e => e.trim()).filter(e => e !== '').map(e => '### ' + e);
+        }
+
+        const startIndex = (currentBookPage - 1) * archivePerPage;
+        const currentItems = allBooks.slice(startIndex, startIndex + archivePerPage);
+        
+        container.innerHTML = marked.parse(currentItems.join('\n\n'));
+        renderPagination(Math.ceil(allBooks.length / archivePerPage), currentBookPage, loadBookArchive, container);
+
+    } catch (e) { container.innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: books.md</p>'; }
+}
+
+/* --- 4. 渲染引擎 --- */
+function showAbout() {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
     
-    // 渲染 ABOUT 顶部的 Header
     document.getElementById('post-header-info').innerHTML = `
         <div class="post-metadata">
             <span class="meta-item">PROFILE</span>
             <span class="meta-item">SHENZHEN</span>
             <span class="meta-item">2026</span>
         </div>
-        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">ABOUT ME</h1>
+        <h1 style="font-family: Georgia, ui-serif, serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">ABOUT ME</h1>
     `;
 
-    // 左侧主内容
     const aboutMarkdown = `# Abel\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我`;
     
-    // 借用主页的 layout-grid 结构，构建双栏布局
     const layoutHTML = `
         <div class="layout-grid">
             <div class="about-main">
@@ -177,27 +225,15 @@ async function showAbout() {
     document.getElementById('article-body').innerHTML = layoutHTML;
     window.scrollTo(0, 0);
 
-    // 异步加载音乐和书单文件到右侧边栏
-    try {
-        const musicRes = await fetch('music.md');
-        if(musicRes.ok) document.getElementById('music-container').innerHTML = marked.parse(await musicRes.text());
-        else document.getElementById('music-container').innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: music.md</p>';
-    } catch(e) {}
-    
-    try {
-        const bookRes = await fetch('books.md');
-        if(bookRes.ok) document.getElementById('books-container').innerHTML = marked.parse(await bookRes.text());
-        else document.getElementById('books-container').innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: books.md</p>';
-    } catch(e) {}
+    // 触发音乐和书单的加载器（自动带分页）
+    loadMusicArchive(1);
+    loadBookArchive(1);
 }
-
-/* --- 5. 视图切换与正文渲染 (支持镜像语言切换) --- */
 
 function calculateReadingTime(text) {
     const cleanText = text.replace(/[*_#`\[\]()]/g, '');
     const wordCount = cleanText.length;
-    const readTime = Math.ceil(wordCount / 350); 
-    return { wordCount, readTime };
+    return { wordCount, readTime: Math.ceil(wordCount / 350) };
 }
 
 function showPost(markdownContent, title, date, loc, field, fileName) {
@@ -205,9 +241,8 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
     document.getElementById('content-view').style.display = 'block';
     
     const { wordCount, readTime } = calculateReadingTime(markdownContent);
-    
-    const isEn = fileName && fileName.includes('_en.md');
-    const targetFile = isEn ? fileName.replace('_en.md', '.md') : (fileName ? fileName.replace('.md', '_en.md') : '');
+    const isEn = fileName.includes('_en.md');
+    const targetFile = isEn ? fileName.replace('_en.md', '.md') : fileName.replace('.md', '_en.md');
     const toggleLabel = isEn ? '[ 中 ]' : '[ EN ]';
 
     document.getElementById('post-header-info').innerHTML = `
@@ -215,10 +250,10 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
             <span class="meta-item">${field}</span>
             <span class="meta-item">${loc}</span>
             <span class="meta-item">${date}</span>
-            ${fileName && fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
+            ${fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
         </div>
-        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
-        <div style="font-family: Consolas, Monaco, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
+        <h1 style="font-family: Georgia, ui-serif, serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
+        <div style="font-family: Consolas, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
             WORDS: ${wordCount} / EST. READ: ${readTime} MIN
         </div>
     `;
@@ -230,22 +265,11 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
 async function switchLanguage(targetFile) {
     try {
         const response = await fetch(`posts/${targetFile}`);
-        if (!response.ok) {
-            alert("Translation file not found in archive.");
-            return;
-        }
+        if (!response.ok) return alert("Translation file not found in archive.");
         const text = await response.text();
         const { meta, content } = parseMarkdown(text);
-        
-        const title = meta.title || targetFile;
-        const date = meta.date || '2026';
-        const loc = meta.location || 'SZ';
-        const field = meta.category || meta.field || 'GENERAL';
-        
-        showPost(content, title, date, loc, field, targetFile);
-    } catch (e) {
-        console.error("Language switch failed:", e);
-    }
+        showPost(content, meta.title || targetFile, meta.date || '2026', meta.location || 'SZ', meta.category || meta.field || 'GENERAL', targetFile);
+    } catch (e) { console.error("Language switch failed:", e); }
 }
 
 function showIndex() {
@@ -254,14 +278,13 @@ function showIndex() {
     window.scrollTo(0, 0);
 }
 
-/* --- 6. Markdown 渲染引擎高级配置 --- */
+/* --- 5. Markdown 图片渲染器 --- */
 const renderer = {
     image(hrefOrToken, title, text) {
         const isToken = typeof hrefOrToken === 'object';
         const src = isToken ? hrefOrToken.href : hrefOrToken;
         const imgTitle = isToken ? hrefOrToken.title : title;
         const imgAlt = isToken ? hrefOrToken.text : text;
-
         const titleAttr = imgTitle ? `title="${imgTitle}"` : '';
         const altAttr = imgAlt ? `alt="${imgAlt}"` : '';
         return `<img src="${src}" ${altAttr} ${titleAttr} loading="lazy">`;
@@ -270,7 +293,5 @@ const renderer = {
 marked.use({ renderer });
 
 // 启动执行
-loadPosts();
-loadDailyLogs();
 loadPosts();
 loadDailyLogs();
