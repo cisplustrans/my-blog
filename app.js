@@ -8,7 +8,6 @@ let currentLogPage = 1;
 function parseMarkdown(text) {
     const result = { meta: {}, content: text };
     
-    // 升级版切割雷达：完美兼容 Windows 换行符(\r\n) 和文件开头的隐形空格(BOM)
     const match = text.match(/^\s*---\r?\n([\s\S]*?)\r?\n---/);
 
     if (match) {
@@ -58,7 +57,6 @@ async function loadPosts(filterField = null) {
                 <div class="post-metadata" style="background:none; color:#999;">DATE: ${date}</div>
             `;
             
-            // 【关键修改】这里增加了 file 参数，告诉渲染器现在读的是哪个文件
             card.onclick = () => showPost(content, title, date, loc, field, file);
             listElement.appendChild(card);
         } catch (e) { console.error(`Failed to load ${file}:`, e); }
@@ -140,7 +138,7 @@ async function loadDailyLogs(page = 1) {
     }
 }
 
-/* --- 全新的 showAbout 渲染引擎 (引入左右双栏排版) --- */
+/* --- 4. 全新的 showAbout 渲染引擎 (引入左右双栏排版) --- */
 async function showAbout() {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
@@ -155,7 +153,7 @@ async function showAbout() {
         <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">ABOUT ME</h1>
     `;
 
-    // 这里是你的左侧主内容
+    // 左侧主内容
     const aboutMarkdown = `# Abel\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我`;
     
     // 借用主页的 layout-grid 结构，构建双栏布局
@@ -183,17 +181,17 @@ async function showAbout() {
     try {
         const musicRes = await fetch('music.md');
         if(musicRes.ok) document.getElementById('music-container').innerHTML = marked.parse(await musicRes.text());
-        else document.getElementById('music-container').innerHTML = '<p>档案建立中...</p>';
+        else document.getElementById('music-container').innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: music.md</p>';
     } catch(e) {}
     
     try {
         const bookRes = await fetch('books.md');
         if(bookRes.ok) document.getElementById('books-container').innerHTML = marked.parse(await bookRes.text());
-        else document.getElementById('books-container').innerHTML = '<p>档案建立中...</p>';
+        else document.getElementById('books-container').innerHTML = '<p style="font-size: 0.8rem; color:#666;">档案未建立: books.md</p>';
     } catch(e) {}
 }
 
-/* --- 4. 视图切换与正文渲染 (支持镜像语言切换) --- */
+/* --- 5. 视图切换与正文渲染 (支持镜像语言切换) --- */
 
 function calculateReadingTime(text) {
     const cleanText = text.replace(/[*_#`\[\]()]/g, '');
@@ -202,16 +200,14 @@ function calculateReadingTime(text) {
     return { wordCount, readTime };
 }
 
-// 【关键修改】增加了 fileName 参数，用于判断中英文
 function showPost(markdownContent, title, date, loc, field, fileName) {
     document.getElementById('index-view').style.display = 'none';
     document.getElementById('content-view').style.display = 'block';
     
     const { wordCount, readTime } = calculateReadingTime(markdownContent);
     
-    // 语言切换逻辑：判断当前文件，计算出镜像文件名
-    const isEn = fileName.includes('_en.md');
-    const targetFile = isEn ? fileName.replace('_en.md', '.md') : fileName.replace('.md', '_en.md');
+    const isEn = fileName && fileName.includes('_en.md');
+    const targetFile = isEn ? fileName.replace('_en.md', '.md') : (fileName ? fileName.replace('.md', '_en.md') : '');
     const toggleLabel = isEn ? '[ 中 ]' : '[ EN ]';
 
     document.getElementById('post-header-info').innerHTML = `
@@ -219,7 +215,7 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
             <span class="meta-item">${field}</span>
             <span class="meta-item">${loc}</span>
             <span class="meta-item">${date}</span>
-            ${fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
+            ${fileName && fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
         </div>
         <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
         <div style="font-family: Consolas, Monaco, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
@@ -231,7 +227,6 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
     window.scrollTo(0, 0);
 }
 
-// 【新增函数】专门负责在不刷新页面的情况下读取另一个语言版本
 async function switchLanguage(targetFile) {
     try {
         const response = await fetch(`posts/${targetFile}`);
@@ -247,7 +242,6 @@ async function switchLanguage(targetFile) {
         const loc = meta.location || 'SZ';
         const field = meta.category || meta.field || 'GENERAL';
         
-        // 重新调用 showPost 渲染新的内容
         showPost(content, title, date, loc, field, targetFile);
     } catch (e) {
         console.error("Language switch failed:", e);
@@ -260,12 +254,7 @@ function showIndex() {
     window.scrollTo(0, 0);
 }
 
-function showAbout() {
-    // About 页面传一个标记，防止显示语言切换
-    showPost('# Abel\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我', 'ABOUT ME', '2026', 'SHENZHEN', 'PROFILE', 'ABOUT');
-}
-
-/* --- 5. Markdown 渲染引擎高级配置 (拦截器) --- */
+/* --- 6. Markdown 渲染引擎高级配置 --- */
 const renderer = {
     image(hrefOrToken, title, text) {
         const isToken = typeof hrefOrToken === 'object';
@@ -281,5 +270,7 @@ const renderer = {
 marked.use({ renderer });
 
 // 启动执行
+loadPosts();
+loadDailyLogs();
 loadPosts();
 loadDailyLogs();
