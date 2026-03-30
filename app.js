@@ -72,28 +72,53 @@ async function loadPosts(filterField = null) {
 
 /* --- 3. 侧栏加载器群 (日志、音乐、书籍分页逻辑) --- */
 
-// 通用分页渲染器 (支持智能折叠)
+// 通用分页渲染器 (极简翻页器模式)
 function renderPagination(totalPages, currentPage, loadFn, container) {
     if (totalPages <= 1) return;
 
     const paginationDiv = document.createElement('div');
     paginationDiv.className = 'log-pagination';
+    
+    // 强制左右对齐布局
+    paginationDiv.style.display = 'flex';
+    paginationDiv.style.justifyContent = 'space-between'; 
+    paginationDiv.style.alignItems = 'center';
+    paginationDiv.style.width = '100%'; 
 
-    // 计算需要显示的页码数组
-    let pages = [];
-    if (totalPages <= 5) {
-        // 如果总页数不多于 5 页，全部显示
-        for (let i = 1; i <= totalPages; i++) pages.push(i);
+    // 1. 上一页按钮 [ ← ]
+    const prevBtn = document.createElement('span');
+    prevBtn.className = 'page-num';
+    prevBtn.innerText = '[ ← ]';
+    if (currentPage > 1) {
+        prevBtn.onclick = () => loadFn(currentPage - 1);
     } else {
-        // 如果页数很多，进行智能折叠
-        if (currentPage <= 3) {
-            pages = [1, 2, 3, '...', totalPages];
-        } else if (currentPage >= totalPages - 2) {
-            pages = [1, '...', totalPages - 2, totalPages - 1, totalPages];
-        } else {
-            pages = [1, '...', currentPage, '...', totalPages];
-        }
+        prevBtn.style.visibility = 'hidden'; // 第一页时隐藏按钮，但保留它占据的空间以保持居中对称
     }
+    paginationDiv.appendChild(prevBtn);
+
+    // 2. 进度指示器 (例如：3 / 12)
+    const indicator = document.createElement('span');
+    indicator.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, monospace';
+    indicator.style.fontSize = '0.8rem';
+    indicator.style.fontWeight = 'bold';
+    indicator.style.color = '#1a1a1a';
+    indicator.style.letterSpacing = '2px';
+    indicator.innerText = `${currentPage} / ${totalPages}`;
+    paginationDiv.appendChild(indicator);
+
+    // 3. 下一页按钮 [ → ]
+    const nextBtn = document.createElement('span');
+    nextBtn.className = 'page-num';
+    nextBtn.innerText = '[ → ]';
+    if (currentPage < totalPages) {
+        nextBtn.onclick = () => loadFn(currentPage + 1);
+    } else {
+        nextBtn.style.visibility = 'hidden'; // 最后一页时隐藏
+    }
+    paginationDiv.appendChild(nextBtn);
+
+    container.appendChild(paginationDiv);
+}
 
     // 渲染页码和省略号
     pages.forEach(p => {
