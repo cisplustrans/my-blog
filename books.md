@@ -1,8 +1,14 @@
-### 📖 原则
-Ray Dalio. 关于建立个人运行系统的思考。
+### 德米安
+Hermann Hesse. 
 
-### 📖 德米安
-Hermann Hesse. 寻找精神内核。
+### 悉达多
+Hermann Hesse. 
 
-### 📖 斯通纳
-John Williams. 暂存。
+### 原则
+Ray Dalio. 
+
+### 斯通纳
+John Williams.
+
+### 金钱心理学
+Morgan Housel.
