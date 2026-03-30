@@ -1,5 +1,8 @@
 // 【唯一的手工操作区】以后每次写了新文章，只需把文件名加到这个数组的最前面即可
 const postFiles = ['post4.md', 'post3.md', 'post2.md', 'post1.md']; 
+let allLogs = [];
+const logsPerPage = 5; 
+let currentLogPage = 1;
 
 /* --- 1. 核心档案解析器 (YAML Frontmatter Parser) --- */
 function parseMarkdown(text) {
@@ -62,16 +65,31 @@ async function loadPosts(filterField = null) {
     }
 }
 
-/* --- 3. 侧栏日志加载器 (朋友圈内联展开模式) --- */
-async function loadDailyLogs() {
+/* --- 3. 侧栏日志加载器 (支持分页) --- */
+async function loadDailyLogs(page = 1) {
     const logContainer = document.getElementById('log-container');
+    currentLogPage = page; 
+
     try {
-        const response = await fetch('daily-log.md');
-        const text = await response.text();
-        let entries = text.split('###').map(e => e.trim()).filter(e => e !== '');
-        logContainer.innerHTML = '';
-        
-        entries.slice(0, 5).forEach(entry => {
+        if (allLogs.length === 0) {
+            const response = await fetch('daily-log.md');
+            if (!response.ok) throw new Error("Log file not found");
+            const text = await response.text();
+            allLogs = text.split('###').map(e => e.trim()).filter(e => e !== '');
+        }
+
+        if (allLogs.length === 0) {
+            logContainer.innerHTML = '<p>EMPTY ARCHIVE</p>';
+            return;
+        }
+
+        const startIndex = (currentLogPage - 1) * logsPerPage;
+        const endIndex = startIndex + logsPerPage;
+        const currentLogs = allLogs.slice(startIndex, endIndex);
+
+        logContainer.innerHTML = ''; 
+
+        currentLogs.forEach(entry => {
             const lines = entry.split('\n');
             const date = lines[0].trim();
             const fullContent = lines.slice(1).join('\n').trim();
@@ -101,9 +119,78 @@ async function loadDailyLogs() {
             div.appendChild(contentDiv);
             logContainer.appendChild(div);
         });
+
+        // 渲染分页控件
+        const totalPages = Math.ceil(allLogs.length / logsPerPage);
+        if (totalPages > 1) {
+            const paginationDiv = document.createElement('div');
+            paginationDiv.className = 'log-pagination';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageSpan = document.createElement('span');
+                pageSpan.className = `page-num ${i === currentLogPage ? 'active' : ''}`;
+                pageSpan.innerText = `[ ${i} ]`;
+                pageSpan.onclick = () => loadDailyLogs(i);
+                paginationDiv.appendChild(pageSpan);
+            }
+            logContainer.appendChild(paginationDiv);
+        }
+
     } catch (e) {
-        logContainer.innerHTML = '<p>EMPTY ARCHIVE</p>';
+        logContainer.innerHTML = '<p>FAILED TO LOAD ARCHIVE</p>';
     }
+}
+
+/* --- 全新的 showAbout 渲染引擎 (引入左右双栏排版) --- */
+async function showAbout() {
+    document.getElementById('index-view').style.display = 'none';
+    document.getElementById('content-view').style.display = 'block';
+    
+    // 渲染 ABOUT 顶部的 Header
+    document.getElementById('post-header-info').innerHTML = `
+        <div class="post-metadata">
+            <span class="meta-item">PROFILE</span>
+            <span class="meta-item">SHENZHEN</span>
+            <span class="meta-item">2026</span>
+        </div>
+        <h1 style="font-family: Georgia, ui-serif, 'Songti SC', 'STSong', serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 30px;">ABOUT ME</h1>
+    `;
+
+    // 这里是你的左侧主内容
+    const aboutMarkdown = `# Abel\n\n一点自己的想法。\n\n目前在广州/深圳。\n\n音乐/社会/自我`;
+    
+    // 借用主页的 layout-grid 结构，构建双栏布局
+    const layoutHTML = `
+        <div class="layout-grid">
+            <div class="about-main">
+                ${marked.parse(aboutMarkdown)}
+            </div>
+            <aside class="sidebar-log sidebar-about">
+                <h3 class="sidebar-title">MUSIC ARCHIVE</h3>
+                <div id="music-container" class="archive-container"><span style="color:#666; font-family: monospace;">[ PULLING DATA... ]</span></div>
+                
+                <div style="margin-top: 40px;"></div>
+                
+                <h3 class="sidebar-title">BOOK ARCHIVE</h3>
+                <div id="books-container" class="archive-container"><span style="color:#666; font-family: monospace;">[ PULLING DATA... ]</span></div>
+            </aside>
+        </div>
+    `;
+    
+    document.getElementById('article-body').innerHTML = layoutHTML;
+    window.scrollTo(0, 0);
+
+    // 异步加载音乐和书单文件到右侧边栏
+    try {
+        const musicRes = await fetch('music.md');
+        if(musicRes.ok) document.getElementById('music-container').innerHTML = marked.parse(await musicRes.text());
+        else document.getElementById('music-container').innerHTML = '<p>档案建立中...</p>';
+    } catch(e) {}
+    
+    try {
+        const bookRes = await fetch('books.md');
+        if(bookRes.ok) document.getElementById('books-container').innerHTML = marked.parse(await bookRes.text());
+        else document.getElementById('books-container').innerHTML = '<p>档案建立中...</p>';
+    } catch(e) {}
 }
 
 /* --- 4. 视图切换与正文渲染 (支持镜像语言切换) --- */
