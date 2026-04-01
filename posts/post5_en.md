@@ -44,8 +44,6 @@ Therefore, barring severe physical trauma (including pathological mental illness
 
 ---
 
-Please forgive my rambling.
-
 The protagonist Sinclair met a close friend like Demian during his coming-of-age. Unfortunately, Hesse is not God. He didn't bless every ordinary person with an almost angelic friend like that. I can only move forward alone, just as the book says:
 
 > "You must listen within yourself, and then you will notice that I am within you."
