@@ -34,7 +34,7 @@ This is exactly why I put the phrase "try to live in accord with the promptings 
 
 Actually, if we shed the eggshell of social discipline covering us, living according to our nature is nothing but a matter of course.
 
-The mission of human beings, from the moment we are born into this world, is simply to gather energy, survive, reproduce, and die.
+The mission of human beings, from the moment we are born into this world, is simply to survive, reproduce, and die.
 
 Everything else, all other behaviors, are merely meanings assigned by the brain.
 
