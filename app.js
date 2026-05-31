@@ -12,7 +12,28 @@ const archivePerPage = 4; // 音乐和书单每页显示 4 个
 let currentMusicPage = 1;
 let currentBookPage = 1;
 
-/* --- 1. 核心档案解析器 (YAML Frontmatter Parser) --- */
+/* --- 1. 核心档案解析器 (Frontmatter Key-Value Parser) --- */
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function escapeAttr(value) {
+    return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
+function clampPage(page, totalItems, perPage) {
+    const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
+    const requestedPage = Number.parseInt(page, 10);
+
+    if (Number.isNaN(requestedPage)) return 1;
+    return Math.min(Math.max(requestedPage, 1), totalPages);
+}
+
 function parseMarkdown(text) {
     const result = { meta: {}, content: text };
     const match = text.match(/^\s*---\r?\n([\s\S]*?)\r?\n---/);
@@ -55,13 +76,19 @@ async function loadPosts(filterField = null) {
 
             if (filterField && field.toUpperCase() !== filterField.toUpperCase()) continue;
 
+            const safeTitle = escapeHtml(title);
+            const safeDate = escapeHtml(date);
+            const safeLoc = escapeHtml(loc);
+            const safeField = escapeHtml(field);
+            const safeDescription = escapeHtml(description);
+
             const card = document.createElement('div');
             card.className = 'post-card';
             card.innerHTML = `
-                <div class="post-metadata"><span class="meta-item">${field}</span><span class="meta-item">${loc}</span></div>
-                <h2>${title}</h2>
-                <p class="post-excerpt">${description}</p>
-                <div class="post-metadata" style="background:none; color:#999;">DATE: ${date}</div>
+                <div class="post-metadata"><span class="meta-item">${safeField}</span><span class="meta-item">${safeLoc}</span></div>
+                <h2>${safeTitle}</h2>
+                <p class="post-excerpt">${safeDescription}</p>
+                <div class="post-metadata" style="background:none; color:#999;">DATE: ${safeDate}</div>
             `;
             
             card.onclick = () => showPost(content, title, date, loc, field, file);
@@ -132,6 +159,8 @@ async function loadDailyLogs(page = 1) {
             allLogs = text.split('###').map(e => e.trim()).filter(e => e !== '');
         }
 
+        currentLogPage = clampPage(page, allLogs.length, logsPerPage);
+
         if (allLogs.length === 0) {
             logContainer.innerHTML = '<p>EMPTY ARCHIVE</p>';
             return;
@@ -154,7 +183,7 @@ async function loadDailyLogs(page = 1) {
             
             const header = document.createElement('div');
             header.className = 'log-header';
-            header.innerHTML = `<strong>${date}</strong><div class="log-preview">${previewText}</div>`;
+            header.innerHTML = `<strong>${escapeHtml(date)}</strong><div class="log-preview">${escapeHtml(previewText)}</div>`;
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'log-content';
@@ -189,6 +218,12 @@ async function loadMusicArchive(page = 1) {
             allMusic = text.split('###').map(e => e.trim()).filter(e => e !== '').map(e => '### ' + e);
         }
 
+        currentMusicPage = clampPage(page, allMusic.length, archivePerPage);
+        if (allMusic.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.8rem; color:#666;">音乐档案为空</p>';
+            return;
+        }
+
         const startIndex = (currentMusicPage - 1) * archivePerPage;
         const currentItems = allMusic.slice(startIndex, startIndex + archivePerPage);
         
@@ -209,6 +244,12 @@ async function loadBookArchive(page = 1) {
             if (!response.ok) throw new Error("File not found");
             const text = await response.text();
             allBooks = text.split('###').map(e => e.trim()).filter(e => e !== '').map(e => '### ' + e);
+        }
+
+        currentBookPage = clampPage(page, allBooks.length, archivePerPage);
+        if (allBooks.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.8rem; color:#666;">书单档案为空</p>';
+            return;
         }
 
         const startIndex = (currentBookPage - 1) * archivePerPage;
@@ -276,14 +317,20 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
     const targetFile = isEn ? fileName.replace('_en.md', '.md') : fileName.replace('.md', '_en.md');
     const toggleLabel = isEn ? '[ 中 ]' : '[ EN ]';
 
+    const safeTitle = escapeHtml(title);
+    const safeDate = escapeHtml(date);
+    const safeLoc = escapeHtml(loc);
+    const safeField = escapeHtml(field);
+    const safeTargetFile = escapeAttr(targetFile);
+
     document.getElementById('post-header-info').innerHTML = `
         <div class="post-metadata">
-            <span class="meta-item">${field}</span>
-            <span class="meta-item">${loc}</span>
-            <span class="meta-item">${date}</span>
-            ${fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${targetFile}')">${toggleLabel}</span>` : ''}
+            <span class="meta-item">${safeField}</span>
+            <span class="meta-item">${safeLoc}</span>
+            <span class="meta-item">${safeDate}</span>
+            ${fileName !== 'ABOUT' ? `<span class="lang-toggle" onclick="switchLanguage('${safeTargetFile}')">${toggleLabel}</span>` : ''}
         </div>
-        <h1 style="font-family: Georgia, ui-serif, serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${title}</h1>
+        <h1 style="font-family: Georgia, ui-serif, serif; font-weight: normal; border-bottom: 2px solid #1a1a1a; padding-bottom:10px; margin-bottom: 10px;">${safeTitle}</h1>
         <div style="font-family: Consolas, monospace; font-size: 0.75rem; color: #888; margin-bottom: 30px; letter-spacing: 1px;">
             WORDS: ${wordCount} / EST. READ: ${readTime} MIN
         </div>
@@ -316,13 +363,31 @@ const renderer = {
         const src = isToken ? hrefOrToken.href : hrefOrToken;
         const imgTitle = isToken ? hrefOrToken.title : title;
         const imgAlt = isToken ? hrefOrToken.text : text;
-        const titleAttr = imgTitle ? `title="${imgTitle}"` : '';
-        const altAttr = imgAlt ? `alt="${imgAlt}"` : '';
-        return `<img src="${src}" ${altAttr} ${titleAttr} loading="lazy">`;
+        const titleAttr = imgTitle ? `title="${escapeAttr(imgTitle)}"` : '';
+        const altAttr = imgAlt ? `alt="${escapeAttr(imgAlt)}"` : '';
+        return `<img src="${escapeAttr(src)}" ${altAttr} ${titleAttr} loading="lazy">`;
     }
 };
-marked.use({ renderer });
+
+if (typeof marked !== 'undefined') {
+    marked.use({ renderer });
+}
+
+if (typeof module !== 'undefined') {
+    module.exports = {
+        archivePerPage,
+        calculateReadingTime,
+        clampPage,
+        escapeAttr,
+        escapeHtml,
+        logsPerPage,
+        parseMarkdown,
+        renderer,
+    };
+}
 
 // 启动执行
-loadPosts();
-loadDailyLogs();
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    loadPosts();
+    loadDailyLogs();
+}
