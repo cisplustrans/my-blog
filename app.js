@@ -1,5 +1,10 @@
 // 【唯一的手工操作区】以后每次写了新文章，只需把文件名加到这个数组的最前面即可
-const postFiles = ['post5.md', 'post4.md', 'post3.md', 'post2.md', 'post1.md']; 
+const archiveVersion = '2026-06-12-post6';
+const postFiles = ['post6.md', 'post5.md', 'post4.md', 'post3.md', 'post2.md', 'post1.md']; 
+
+function versionedPath(path) {
+    return `${path}?v=${archiveVersion}`;
+}
 
 // --- 全局状态管理 ---
 let allLogs = [];
@@ -41,7 +46,7 @@ async function loadPosts(filterField = null) {
 
     for (const file of postFiles) {
         try {
-            const response = await fetch(`posts/${file}`);
+            const response = await fetch(versionedPath(`posts/${file}`));
             if (!response.ok) continue; 
             const text = await response.text();
 
@@ -295,7 +300,7 @@ function showPost(markdownContent, title, date, loc, field, fileName) {
 
 async function switchLanguage(targetFile) {
     try {
-        const response = await fetch(`posts/${targetFile}`);
+        const response = await fetch(versionedPath(`posts/${targetFile}`));
         if (!response.ok) return alert("Translation file not found in archive.");
         const text = await response.text();
         const { meta, content } = parseMarkdown(text);
