@@ -27,7 +27,7 @@
 ![健身房](images/daily1_01.jpg)
 
 ### MAR 09, 2026
-为档案馆挂上了正式的门牌号：aboarchive.site。做了一些细小的改动，网站易读性更好了。
+为档案馆挂上了正式的门牌号：abelarchive.site。做了一些细小的改动，网站易读性更好了。
 
 ### MAR 08, 2026
 增加了Daily Log边栏。
